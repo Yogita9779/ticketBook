@@ -60,7 +60,7 @@ export function VoucherProductDetail({ voucher }: { voucher: Voucher }) {
               <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-bold text-slate-800">How it works<span className="inline-flex items-center gap-2 text-xs font-medium text-slate-500">Show steps<ChevronDown className="h-4 w-4 text-rose-600 transition group-open:rotate-180" /></span></summary>
               <div className="mt-4 grid gap-3 border-t border-slate-100 pt-4 text-sm text-slate-600">
                 <p className="flex items-start gap-2"><span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-rose-50 text-xs font-bold text-rose-700">1</span>Pick an amount within the available range.</p>
-                <p className="flex items-start gap-2"><span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-rose-50 text-xs font-bold text-rose-700">2</span>Continue to view this brand's voucher offer.</p>
+                <p className="flex items-start gap-2"><span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-rose-50 text-xs font-bold text-rose-700">2</span>Continue to view this brand&pos:t voucher offer.</p>
                 <p className="flex items-start gap-2"><span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-rose-50 text-xs font-bold text-rose-700">3</span>Complete your order using the checkout options.</p>
               </div>
             </details>
