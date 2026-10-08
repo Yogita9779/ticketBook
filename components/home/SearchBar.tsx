@@ -21,7 +21,7 @@ export function SearchBar() {
             <Link
               key={label}
               href={href}
-              className="flex min-h-14 items-center justify-center gap-2 rounded-pill bg-white px-3 py-3 text-sm font-semibold text-ink shadow-sm transition hover:-translate-y-0.5 hover:bg-fuchsia-50 hover:text-fuchsia-800 hover:shadow-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+              className="flex min-h-14 items-center justify-center gap-2 rounded-pill border border-slate-200 bg-white px-3 py-3 text-sm font-bold text-ink shadow-[0_3px_10px_rgba(15,23,42,0.12)] transition hover:-translate-y-0.5 hover:border-fuchsia-300 hover:bg-fuchsia-50 hover:text-fuchsia-900 hover:shadow-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
             >
               <Icon className="h-4 w-4 shrink-0 text-fuchsia-800" aria-hidden="true" />
               <span>{label}</span>

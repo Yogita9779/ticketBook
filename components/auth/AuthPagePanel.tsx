@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CircleUserRound, Eye, EyeOff, Headphones, LockKeyhole, Mail } from "lucide-react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -30,6 +31,7 @@ type SignInValues = z.infer<typeof authSchema>;
 type RegisterValues = z.infer<typeof registerSchema>;
 
 export function AuthPagePanel() {
+  const router = useRouter();
   const [tab, setTab] = useState("sign-in");
   const isSignIn = tab === "sign-in";
 
@@ -50,7 +52,7 @@ export function AuthPagePanel() {
               <TabsTrigger value="sign-in" className="rounded-lg">Sign In</TabsTrigger>
               <TabsTrigger value="register" className="rounded-lg">Create Account</TabsTrigger>
             </TabsList>
-            <TabsContent value="sign-in"><SignInForm /></TabsContent>
+            <TabsContent value="sign-in"><SignInForm onSuccess={() => router.push("/dashboard")} /></TabsContent>
             <TabsContent value="register"><RegisterForm /></TabsContent>
           </Tabs>
         </section>
@@ -66,7 +68,7 @@ export function AuthPagePanel() {
   );
 }
 
-function SignInForm() {
+function SignInForm({ onSuccess }: { onSuccess: () => void }) {
   const [pending, setPending] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const form = useForm<SignInValues>({ resolver: zodResolver(authSchema), defaultValues: { email: "", password: "" } });
@@ -78,6 +80,7 @@ function SignInForm() {
       setPending(false);
       toast.success("Signed in. Welcome back to TicketHub.");
       form.reset();
+      onSuccess();
     })}>
       <Field label="Email Address" id="login-email" icon={<Mail className="h-4 w-4" />} error={form.formState.errors.email?.message}>
         <Input id="login-email" type="email" autoComplete="email" placeholder="Enter your email" className="h-7 border-0 bg-transparent px-0 shadow-none focus-visible:ring-0" {...form.register("email")} />

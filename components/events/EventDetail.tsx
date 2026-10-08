@@ -51,8 +51,8 @@ export function EventDetail({ event, related }: { event: EventItem; related: Eve
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/10" />
       </div>
-      <div className="container-page -mt-16 grid gap-8 pb-28 lg:grid-cols-[1.4fr_0.8fr] lg:pb-16">
-        <div className="rounded-card bg-white p-6 shadow-elevated">
+      <div className="container-page relative z-10 -mt-8 grid items-start gap-8 pb-28 lg:-mt-10 lg:grid-cols-[1.4fr_0.8fr] lg:pb-16">
+        <div className="rounded-card bg-white p-6 shadow-elevated sm:p-8">
           <p className="text-sm font-semibold uppercase tracking-wide text-accent">{event.category}</p>
           <h1 className="mt-2 text-3xl font-bold tracking-tight text-ink sm:text-4xl">{event.title}</h1>
           <p className="mt-3 flex items-start gap-2 text-ink-muted">
@@ -66,14 +66,14 @@ export function EventDetail({ event, related }: { event: EventItem; related: Eve
           </p>
           <p className="mt-5 text-base leading-relaxed text-ink-muted">{event.description}</p>
         </div>
-        <div className="h-fit rounded-card bg-white p-6 shadow-card lg:sticky lg:top-24">
+        <div className="h-fit rounded-card bg-white p-6 shadow-card sm:p-7 lg:sticky lg:top-24">
           <h2 className="text-lg font-semibold">Choose tickets</h2>
           <fieldset className="mt-4 space-y-3">
             <legend className="sr-only">Ticket tier</legend>
             {event.tiers.map((item) => (
               <label
                 key={item.id}
-                className={`flex cursor-pointer items-start gap-3 rounded-lg border p-3 ${tierId === item.id ? "border-accent bg-rose-50" : "border-neutral-200"}`}
+                className={`flex cursor-pointer items-start gap-3 rounded-lg border p-4 leading-normal ${tierId === item.id ? "border-accent bg-rose-50" : "border-neutral-200"}`}
               >
                 <input
                   type="radio"
