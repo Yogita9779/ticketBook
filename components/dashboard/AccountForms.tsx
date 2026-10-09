@@ -11,6 +11,14 @@ import { dashCard } from "@/components/dashboard/ui";
 import { useAccount } from "@/lib/account-store";
 import { profileSchema, type ProfileValues } from "@/lib/schemas";
 
+function normalizePhoneDigits(phone: string) {
+  let digits = phone.replace(/\D/g, "");
+  if (digits.startsWith("0027")) digits = digits.slice(4);
+  else if (digits.startsWith("27") && digits.length > 10) digits = digits.slice(2);
+  if (digits.length === 9) digits = `0${digits}`;
+  return digits.slice(0, 10);
+}
+
 export function ProfileForm() {
   const profile = useAccount((state) => state.profile);
   const updateProfile = useAccount((state) => state.updateProfile);
@@ -18,15 +26,16 @@ export function ProfileForm() {
   const [avatarError, setAvatarError] = useState("");
   const form = useForm<ProfileValues>({
     resolver: zodResolver(profileSchema),
-    defaultValues: { name: profile.name, email: profile.email, phone: profile.phone },
+    defaultValues: { name: profile.name, email: profile.email, phone: normalizePhoneDigits(profile.phone) },
   });
+  const phoneField = form.register("phone");
   const ready = useAccountReady();
   const name = form.watch("name");
 
   useEffect(() => {
     if (!ready) return;
     const current = useAccount.getState().profile;
-    form.reset({ name: current.name, email: current.email, phone: current.phone });
+    form.reset({ name: current.name, email: current.email, phone: normalizePhoneDigits(current.phone) });
     setAvatar(current.avatar);
   }, [form, ready]);
 
@@ -40,6 +49,12 @@ export function ProfileForm() {
         className={`${dashCard} space-y-4 p-5 sm:p-6`}
         noValidate
         onSubmit={form.handleSubmit((values) => {
+          const nextEmail = values.email.trim().toLowerCase();
+          const currentEmail = profile.email.trim().toLowerCase();
+          if (nextEmail !== currentEmail && useAccount.getState().credentialsByEmail[nextEmail]) {
+            toast.error("That email already belongs to another account.");
+            return;
+          }
           updateProfile({ ...values, avatar });
           toast.success("Profile saved");
         })}
@@ -85,7 +100,22 @@ export function ProfileForm() {
           <FieldError message={form.formState.errors.email?.message} />
         </label>
         <label className="block text-sm font-semibold">Phone
-          <input className={fieldClass} {...form.register("phone")} />
+          <div className="mt-1 flex h-11 overflow-hidden rounded-xl border border-slate-200 bg-white focus-within:ring-2 focus-within:ring-rose-600 dark:border-white/10 dark:bg-[#0c0e14]">
+            <span className="inline-flex items-center border-r border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-slate-300">+27</span>
+            <input
+              {...phoneField}
+              onChange={(event) => {
+                event.target.value = event.target.value.replace(/\D/g, "").slice(0, 10);
+                void phoneField.onChange(event);
+              }}
+              type="tel"
+              inputMode="numeric"
+              autoComplete="tel-national"
+              placeholder="10-digit mobile number"
+              maxLength={10}
+              className="min-w-0 flex-1 bg-transparent px-3 text-sm outline-none"
+            />
+          </div>
           <FieldError message={form.formState.errors.phone?.message} />
         </label>
         <button type="submit" className="h-12 rounded-2xl bg-rose-600 px-5 text-sm font-bold text-white">Save profile</button>

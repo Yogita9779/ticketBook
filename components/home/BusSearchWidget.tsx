@@ -10,14 +10,13 @@ import { Button } from "@/components/ui/button";
 import { FieldError } from "@/components/ui/FieldError";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { busCities } from "@/data/categories";
 import { toSearchString } from "@/lib/utils";
 
 const schema = z
   .object({
-    from: z.string().min(1, "Choose a departure city"),
-    to: z.string().min(1, "Choose a destination"),
+    from: z.string().refine((value) => busCities.includes(value), "No data found"),
+    to: z.string().refine((value) => busCities.includes(value), "No data found"),
     depart: z.string().min(1, "Choose a travel date"),
     ret: z.string().optional(),
     passengers: z.string().min(1),
@@ -26,12 +25,6 @@ const schema = z
   .superRefine((value, ctx) => {
     if (value.from && value.to && value.from === value.to) {
       ctx.addIssue({ code: "custom", path: ["to"], message: "Destination must be different" });
-    }
-    if (value.trip === "return" && !value.ret) {
-      ctx.addIssue({ code: "custom", path: ["ret"], message: "Choose a return date" });
-    }
-    if (value.depart && value.ret && value.ret < value.depart) {
-      ctx.addIssue({ code: "custom", path: ["ret"], message: "Return must be on or after departure" });
     }
   });
 
@@ -59,13 +52,17 @@ export function BusSearchWidget() {
     defaultValues: { from: "", to: "", depart: "", ret: "", passengers: "1", trip: "oneway" },
   });
   const [passengers, setPassengers] = useState<PassengerCounts>(initialPassengers);
+  const [fromQuery, setFromQuery] = useState("");
+  const [toQuery, setToQuery] = useState("");
+  const [fromSuggestionsOpen, setFromSuggestionsOpen] = useState(false);
+  const [toSuggestionsOpen, setToSuggestionsOpen] = useState(false);
   const [draftPassengers, setDraftPassengers] = useState<PassengerCounts>(initialPassengers);
   const [passengerPickerOpen, setPassengerPickerOpen] = useState(false);
   const trip = form.watch("trip");
-  const fromValue = form.watch("from");
-  const toValue = form.watch("to");
   const passengerTotal = countPassengers(passengers);
   const draftPassengerTotal = countPassengers(draftPassengers);
+  const fromSuggestions = busCities.filter((city) => city.toLowerCase().includes(fromQuery.trim().toLowerCase()));
+  const toSuggestions = busCities.filter((city) => city.toLowerCase().includes(toQuery.trim().toLowerCase()));
 
   return (
     <form
@@ -98,25 +95,71 @@ export function BusSearchWidget() {
       <div className="space-y-3">
         <div className="rounded-xl bg-[#f3f3f5] px-4 py-2">
           <Label htmlFor="bus-from" className="text-xs font-normal text-slate-500">Departing From</Label>
-          <Select value={fromValue || undefined} onValueChange={(value) => form.setValue("from", value, { shouldValidate: true })}>
-            <SelectTrigger id="bus-from" className="h-8 justify-start gap-2 border-0 bg-transparent px-0 py-0 shadow-none focus-visible:ring-0 [&>svg:last-child]:hidden">
-              <BusFront className="h-4 w-4 shrink-0 text-rose-500" aria-hidden="true" />
-              <SelectValue placeholder="Enter city or bus stop" />
-            </SelectTrigger>
-            <SelectContent>{busCities.map((city) => <SelectItem key={city} value={city}>{city}</SelectItem>)}</SelectContent>
-          </Select>
+          <div className="relative flex items-center gap-2">
+            <BusFront className="h-4 w-4 shrink-0 text-rose-500" aria-hidden="true" />
+            <input
+              id="bus-from"
+              value={fromQuery}
+              onFocus={() => setFromSuggestionsOpen(true)}
+              onBlur={() => setFromSuggestionsOpen(false)}
+              onChange={(event) => {
+                const text = event.target.value;
+                const city = busCities.find((item) => item.toLowerCase() === text.trim().toLowerCase());
+                setFromQuery(city ?? text);
+                form.setValue("from", city ?? "");
+                form.clearErrors("from");
+                setFromSuggestionsOpen(true);
+              }}
+              placeholder="Enter city or bus stop"
+              autoComplete="off"
+              aria-label="Departing from city or bus stop"
+              aria-expanded={fromSuggestionsOpen}
+              aria-controls="bus-from-suggestions"
+              className="h-8 min-w-0 w-full bg-transparent text-sm text-ink outline-none"
+            />
+            {fromSuggestionsOpen ? (
+              <div id="bus-from-suggestions" role="listbox" aria-label="Departure cities" className="absolute left-0 right-0 top-full z-30 mt-2 max-h-56 overflow-auto rounded-xl border border-slate-200 bg-white p-1 shadow-xl">
+                {fromSuggestions.length ? fromSuggestions.map((city) => (
+                  <button key={city} type="button" role="option" aria-selected={form.getValues("from") === city} onMouseDown={(event) => event.preventDefault()} onClick={() => { setFromQuery(city); form.setValue("from", city, { shouldValidate: true }); form.clearErrors("from"); setFromSuggestionsOpen(false); }} className="block w-full rounded-lg px-3 py-2 text-left text-sm text-slate-700 hover:bg-rose-50 hover:text-rose-700">{city}</button>
+                )) : <p className="px-3 py-2 text-sm text-slate-500">No data found</p>}
+              </div>
+            ) : null}
+          </div>
           <FieldError message={form.formState.errors.from?.message} />
         </div>
 
         <div className="rounded-xl bg-[#f3f3f5] px-4 py-2">
           <Label htmlFor="bus-to" className="text-xs font-normal text-slate-500">Traveling To</Label>
-          <Select value={toValue || undefined} onValueChange={(value) => form.setValue("to", value, { shouldValidate: true })}>
-            <SelectTrigger id="bus-to" className="h-8 justify-start gap-2 border-0 bg-transparent px-0 py-0 shadow-none focus-visible:ring-0 [&>svg:last-child]:hidden">
-              <BusFront className="h-4 w-4 shrink-0 text-rose-500" aria-hidden="true" />
-              <SelectValue placeholder="Enter city or bus stop" />
-            </SelectTrigger>
-            <SelectContent>{busCities.map((city) => <SelectItem key={city} value={city}>{city}</SelectItem>)}</SelectContent>
-          </Select>
+          <div className="relative flex items-center gap-2">
+            <BusFront className="h-4 w-4 shrink-0 text-rose-500" aria-hidden="true" />
+            <input
+              id="bus-to"
+              value={toQuery}
+              onFocus={() => setToSuggestionsOpen(true)}
+              onBlur={() => setToSuggestionsOpen(false)}
+              onChange={(event) => {
+                const text = event.target.value;
+                const city = busCities.find((item) => item.toLowerCase() === text.trim().toLowerCase());
+                setToQuery(city ?? text);
+                form.setValue("to", city ?? "");
+                form.clearErrors("to");
+                setToSuggestionsOpen(true);
+              }}
+              placeholder="Enter city or bus stop"
+              autoComplete="off"
+              aria-label="Traveling to city or bus stop"
+              aria-expanded={toSuggestionsOpen}
+              aria-controls="bus-to-suggestions"
+              className="h-8 min-w-0 w-full bg-transparent text-sm text-ink outline-none"
+            />
+            {toSuggestionsOpen ? (
+              <div id="bus-to-suggestions" role="listbox" aria-label="Destination cities" className="absolute left-0 right-0 top-full z-30 mt-2 max-h-56 overflow-auto rounded-xl border border-slate-200 bg-white p-1 shadow-xl">
+                {toSuggestions.length ? toSuggestions.map((city) => (
+                  <button key={city} type="button" role="option" aria-selected={form.getValues("to") === city} onMouseDown={(event) => event.preventDefault()} onClick={() => { setToQuery(city); form.setValue("to", city, { shouldValidate: true }); form.clearErrors("to"); setToSuggestionsOpen(false); }} className="block w-full rounded-lg px-3 py-2 text-left text-sm text-slate-700 hover:bg-rose-50 hover:text-rose-700">{city}</button>
+                )) : <p className="px-3 py-2 text-sm text-slate-500">No data found</p>}
+              </div>
+            ) : null}
+          </div>
           <FieldError message={form.formState.errors.to?.message} />
         </div>
 
@@ -128,17 +171,6 @@ export function BusSearchWidget() {
           </div>
           <FieldError message={form.formState.errors.depart?.message} />
         </div>
-
-        {trip === "return" ? (
-          <div className="rounded-xl bg-[#f3f3f5] px-4 py-2.5">
-            <Label htmlFor="bus-return" className="text-xs font-normal text-slate-500">Return Date</Label>
-            <div className="flex items-center gap-2">
-              <CalendarDays className="h-4 w-4 shrink-0 text-rose-500" aria-hidden="true" />
-              <input id="bus-return" type="date" min={form.watch("depart") || today} className="h-7 w-full bg-transparent text-sm text-ink outline-none" {...form.register("ret")} />
-            </div>
-            <FieldError message={form.formState.errors.ret?.message} />
-          </div>
-        ) : null}
 
         <Popover open={passengerPickerOpen} onOpenChange={(open) => {
           if (open) setDraftPassengers(passengers);

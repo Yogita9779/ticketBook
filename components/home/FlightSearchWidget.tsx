@@ -16,8 +16,8 @@ import { toSearchString } from "@/lib/utils";
 
 const schema = z
   .object({
-    from: z.string().min(1, "Choose a departure city"),
-    to: z.string().min(1, "Choose a destination"),
+    from: z.string().min(1, "Choose a departure city").refine((value) => airports.some((airport) => airport.code === value), "Choose a city from the list"),
+    to: z.string().min(1, "Choose a destination").refine((value) => airports.some((airport) => airport.code === value), "Choose a city from the list"),
     depart: z.string().min(1, "Choose a departure date"),
     ret: z.string().optional(),
     passengers: z.string().min(1),
@@ -28,12 +28,6 @@ const schema = z
   .superRefine((value, ctx) => {
     if (value.from && value.to && value.from === value.to) {
       ctx.addIssue({ code: "custom", path: ["to"], message: "Destination must be different" });
-    }
-    if (value.trip === "return" && !value.ret) {
-      ctx.addIssue({ code: "custom", path: ["ret"], message: "Choose a return date" });
-    }
-    if (value.depart && value.ret && value.ret < value.depart) {
-      ctx.addIssue({ code: "custom", path: ["ret"], message: "Return must be on or after departure" });
     }
   });
 
@@ -47,13 +41,13 @@ export function FlightSearchWidget({ stacked = false }: { stacked?: boolean }) {
     defaultValues: { from: "", to: "", depart: "", ret: "", passengers: "1", trip: "oneway", cabin: "Economy", stops: "Any number of stops" },
   });
   const [passengers, setPassengers] = useState({ adult: 1, child: 0, infant: 0 });
+  const [fromQuery, setFromQuery] = useState("");
+  const [toQuery, setToQuery] = useState("");
   const [draftPassengers, setDraftPassengers] = useState(passengers);
   const [passengerPickerOpen, setPassengerPickerOpen] = useState(false);
   const passengerTotal = passengers.adult + passengers.child + passengers.infant;
   const draftPassengerTotal = draftPassengers.adult + draftPassengers.child + draftPassengers.infant;
   const trip = form.watch("trip");
-  const fromValue = form.watch("from");
-  const toValue = form.watch("to");
 
   return (
     <form
@@ -98,34 +92,51 @@ export function FlightSearchWidget({ stacked = false }: { stacked?: boolean }) {
       </fieldset>
       <div className={stacked ? "rounded-xl bg-[#f3f3f5] px-4 py-2.5" : ""}>
         <Label htmlFor="flight-from" className={stacked ? "text-xs font-normal text-slate-500" : undefined}>{stacked ? "Departing From" : "From"}</Label>
-        <Select value={fromValue || undefined} onValueChange={(value) => form.setValue("from", value, { shouldValidate: true })}>
-          <SelectTrigger id="flight-from" className={stacked ? "h-8 justify-start gap-2 border-0 bg-transparent px-0 py-0 shadow-none focus-visible:ring-0 [&>svg:last-child]:hidden" : "mt-1"} aria-label="Departure city">
-            {stacked ? <><Plane className="h-4 w-4 shrink-0 text-rose-500" aria-hidden="true" /><SelectValue placeholder="Enter city or airport" /></> : <SelectValue placeholder="Departure" />}
-          </SelectTrigger>
-          <SelectContent>
-            {airports.map((airport) => (
-              <SelectItem key={airport.code} value={airport.code}>
-                {airport.city} ({airport.code})
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className={stacked ? "flex items-center gap-2" : "mt-1 flex items-center gap-2 rounded-lg border border-neutral-300 px-3"}>
+          {stacked ? <Plane className="h-4 w-4 shrink-0 text-rose-500" aria-hidden="true" /> : null}
+          <input
+            id="flight-from"
+            list="flight-airport-options"
+            value={fromQuery}
+            onChange={(event) => {
+              const text = event.target.value;
+              const airport = airports.find((item) => item.city.toLowerCase() === text.trim().toLowerCase() || item.code.toLowerCase() === text.trim().toLowerCase());
+              setFromQuery(airport?.city ?? text);
+              form.setValue("from", airport?.code ?? "");
+              form.clearErrors("from");
+            }}
+            placeholder={stacked ? "Enter city or airport" : "Departure city or airport"}
+            autoComplete="off"
+            className={stacked ? "h-8 min-w-0 w-full bg-transparent text-sm text-ink outline-none" : "h-11 min-w-0 w-full bg-transparent text-sm outline-none"}
+            aria-label="Departure city or airport"
+          />
+        </div>
         <FieldError message={form.formState.errors.from?.message} />
       </div>
       <div className={stacked ? "rounded-xl bg-[#f3f3f5] px-4 py-2.5" : ""}>
         <Label htmlFor="flight-to" className={stacked ? "text-xs font-normal text-slate-500" : undefined}>{stacked ? "Traveling To" : "To"}</Label>
-        <Select value={toValue || undefined} onValueChange={(value) => form.setValue("to", value, { shouldValidate: true })}>
-          <SelectTrigger id="flight-to" className={stacked ? "h-8 justify-start gap-2 border-0 bg-transparent px-0 py-0 shadow-none focus-visible:ring-0 [&>svg:last-child]:hidden" : "mt-1"} aria-label="Destination city">
-            {stacked ? <><Plane className="h-4 w-4 shrink-0 text-rose-500" aria-hidden="true" /><SelectValue placeholder="Enter city or airport" /></> : <SelectValue placeholder="Destination" />}
-          </SelectTrigger>
-          <SelectContent>
-            {airports.map((airport) => (
-              <SelectItem key={airport.code} value={airport.code}>
-                {airport.city} ({airport.code})
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className={stacked ? "flex items-center gap-2" : "mt-1 flex items-center gap-2 rounded-lg border border-neutral-300 px-3"}>
+          {stacked ? <Plane className="h-4 w-4 shrink-0 text-rose-500" aria-hidden="true" /> : null}
+          <input
+            id="flight-to"
+            list="flight-airport-options"
+            value={toQuery}
+            onChange={(event) => {
+              const text = event.target.value;
+              const airport = airports.find((item) => item.city.toLowerCase() === text.trim().toLowerCase() || item.code.toLowerCase() === text.trim().toLowerCase());
+              setToQuery(airport?.city ?? text);
+              form.setValue("to", airport?.code ?? "");
+              form.clearErrors("to");
+            }}
+            placeholder={stacked ? "Enter city or airport" : "Destination city or airport"}
+            autoComplete="off"
+            className={stacked ? "h-8 min-w-0 w-full bg-transparent text-sm text-ink outline-none" : "h-11 min-w-0 w-full bg-transparent text-sm outline-none"}
+            aria-label="Destination city or airport"
+          />
+          <datalist id="flight-airport-options">
+            {airports.map((airport) => <option key={airport.code} value={airport.city} label={airport.code} />)}
+          </datalist>
+        </div>
         <FieldError message={form.formState.errors.to?.message} />
       </div>
       <div className={stacked ? "rounded-xl bg-[#f3f3f5] px-4 py-2.5" : ""}>
@@ -136,16 +147,7 @@ export function FlightSearchWidget({ stacked = false }: { stacked?: boolean }) {
         </div>
         <FieldError message={form.formState.errors.depart?.message} />
       </div>
-      {trip === "return" ? (
-        <div className={stacked ? "rounded-xl bg-[#f3f3f5] px-4 py-2.5" : ""}>
-          <Label htmlFor="flight-return" className={stacked ? "text-xs font-normal text-slate-500" : undefined}>{stacked ? "Return Date" : "Return"}</Label>
-          <div className={stacked ? "flex items-center gap-2" : ""}>
-            {stacked ? <CalendarDays className="h-4 w-4 shrink-0 text-rose-500" aria-hidden="true" /> : null}
-            <input id="flight-return" type="date" min={form.watch("depart") || today} className={stacked ? "h-7 w-full bg-transparent text-sm text-ink outline-none" : "mt-1 h-11 w-full rounded-lg border border-neutral-300 px-3 text-sm"} {...form.register("ret")} />
-          </div>
-          <FieldError message={form.formState.errors.ret?.message} />
-        </div>
-      ) : !stacked ? <div className="hidden xl:block" /> : null}
+      {!stacked ? <div className="hidden xl:block" aria-hidden="true" /> : null}
       {stacked ? (
         <>
           <Popover open={passengerPickerOpen} onOpenChange={(open) => {

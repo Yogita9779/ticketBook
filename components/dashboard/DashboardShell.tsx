@@ -13,10 +13,7 @@ import {
   LayoutDashboard,
   LogOut,
   Menu,
-  Moon,
-  Search,
   Settings,
-  Sun,
   Ticket,
   UserRound,
   X,
@@ -55,7 +52,6 @@ export function DashboardShell({ children }: { children: ReactNode }) {
   const signedIn = useAccount((state) => state.signedIn);
   const collapsed = useAccount((state) => state.sidebarCollapsed);
   const toggleSidebar = useAccount((state) => state.toggleSidebar);
-  const setTheme = useAccount((state) => state.setTheme);
   const signOut = useAccount((state) => state.signOut);
   const profile = useAccount((state) => state.profile);
   const notices = useAccount((state) => state.notices);
@@ -64,7 +60,6 @@ export function DashboardShell({ children }: { children: ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [noticesOpen, setNoticesOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const [query, setQuery] = useState("");
   const menuRef = useRef<HTMLDivElement>(null);
   const unread = notices.filter((notice) => !notice.read).length;
 
@@ -197,34 +192,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
               <Link href="/dashboard" className="relative lg:hidden" aria-label="Bookora dashboard">
                 <Image src="/bookora-logo.png" alt="Bookora" width={2164} height={727} className="h-11 w-32 object-contain" />
               </Link>
-              <form
-                role="search"
-                className="relative mx-auto hidden min-w-0 max-w-xl flex-1 md:block"
-                onSubmit={(event) => {
-                  event.preventDefault();
-                  const next = query.trim();
-                  router.push(next ? `/dashboard/events?q=${encodeURIComponent(next)}` : "/dashboard/events");
-                }}
-              >
-                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" aria-hidden="true" />
-                <label htmlFor="dashboard-search" className="sr-only">Search events</label>
-                <input
-                  id="dashboard-search"
-                  value={query}
-                  onChange={(event) => setQuery(event.target.value)}
-                  placeholder="Search concerts, sport, cities…"
-                  className="h-11 w-full rounded-2xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-sm outline-none ring-rose-600 placeholder:text-slate-400 focus:bg-white focus:ring-2 dark:border-white/10 dark:bg-white/5 dark:focus:bg-[#161922]"
-                />
-              </form>
               <div className="ml-auto flex items-center gap-1 sm:gap-2">
-                <button
-                  type="button"
-                  aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                  className="inline-flex h-10 w-10 items-center justify-center rounded-xl text-slate-600 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-600 dark:text-slate-200 dark:hover:bg-white/10"
-                >
-                  {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-                </button>
                 <div className="relative">
                   <button
                     type="button"
@@ -297,24 +265,6 @@ export function DashboardShell({ children }: { children: ReactNode }) {
               </div>
             </div>
           </header>
-          <form
-            role="search"
-            className="border-b border-slate-200/80 bg-white/80 px-4 py-2 backdrop-blur-xl dark:border-white/10 dark:bg-[#12141b]/80 md:hidden"
-            onSubmit={(event) => {
-              event.preventDefault();
-              const next = query.trim();
-              router.push(next ? `/dashboard/events?q=${encodeURIComponent(next)}` : "/dashboard/events");
-            }}
-          >
-            <label htmlFor="dashboard-search-mobile" className="sr-only">Search events</label>
-            <input
-              id="dashboard-search-mobile"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search events"
-              className="h-11 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-sm outline-none ring-rose-600 focus:ring-2 dark:border-white/10 dark:bg-white/5"
-            />
-          </form>
           <div className="px-4 py-6 pb-28 sm:px-6 lg:px-8 lg:pb-10">{!ready || signedIn ? children : <p className="text-sm text-slate-500">Signing you out…</p>}</div>
         </div>
       </div>

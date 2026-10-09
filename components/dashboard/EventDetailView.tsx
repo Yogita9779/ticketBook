@@ -18,6 +18,14 @@ import type { Booking, EventItem, TicketTierName } from "@/types";
 
 const steps = ["Tickets", "Attendee", "Payment", "Confirmation"];
 
+function normalizePhoneDigits(phone: string) {
+  let digits = phone.replace(/\D/g, "");
+  if (digits.startsWith("0027")) digits = digits.slice(4);
+  else if (digits.startsWith("27") && digits.length > 10) digits = digits.slice(2);
+  if (digits.length === 9) digits = `0${digits}`;
+  return digits.slice(0, 10);
+}
+
 export function EventDetailView({ event, startBooking = false }: { event: EventItem; startBooking?: boolean }) {
   const saved = useSavedEvents();
   const profile = useAccount((state) => state.profile);
@@ -34,18 +42,22 @@ export function EventDetailView({ event, startBooking = false }: { event: EventI
 
   const attendeeForm = useForm<AttendeeValues>({
     resolver: zodResolver(attendeeSchema),
-    defaultValues: { name: profile.name, email: profile.email, phone: profile.phone },
+    defaultValues: { name: profile.name, email: profile.email, phone: normalizePhoneDigits(profile.phone) },
   });
+  const phoneField = attendeeForm.register("phone");
   const paymentForm = useForm<PaymentValues>({
     resolver: zodResolver(paymentSchema),
     defaultValues: { cardName: profile.name, cardNumber: "", expiry: "", cvc: "" },
   });
+  const cardNumberField = paymentForm.register("cardNumber");
+  const expiryField = paymentForm.register("expiry");
+  const cvcField = paymentForm.register("cvc");
   const ready = useAccountReady();
 
   useEffect(() => {
     if (!ready) return;
     const current = useAccount.getState().profile;
-    attendeeForm.reset({ name: current.name, email: current.email, phone: current.phone });
+    attendeeForm.reset({ name: current.name, email: current.email, phone: normalizePhoneDigits(current.phone) });
     paymentForm.reset({ cardName: current.name, cardNumber: "", expiry: "", cvc: "" });
   }, [attendeeForm, paymentForm, ready]);
 
@@ -62,7 +74,6 @@ export function EventDetailView({ event, startBooking = false }: { event: EventI
           <p className="mt-1 flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400"><MapPin className="h-4 w-4" aria-hidden="true" />{event.venue}, {event.city}</p>
           <p className="mt-5 max-w-2xl text-sm leading-7 text-slate-600 dark:text-slate-300">{event.description}</p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <button type="button" onClick={() => setStep(0)} className="inline-flex h-12 items-center rounded-2xl bg-rose-600 px-5 text-sm font-bold text-white hover:bg-rose-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-600">Book now</button>
             <button type="button" aria-pressed={active} onClick={() => saved.toggle(event)} className="inline-flex h-12 items-center gap-2 rounded-2xl border border-slate-200 px-5 text-sm font-bold hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-600 dark:border-white/10 dark:hover:bg-white/5">
               <Heart className={active ? "h-4 w-4 fill-rose-600 text-rose-600" : "h-4 w-4"} aria-hidden="true" />
               {active ? "Saved" : "Add to saved"}
@@ -138,7 +149,22 @@ export function EventDetailView({ event, startBooking = false }: { event: EventI
               <input type="email" className={fieldClass} autoComplete="email" {...attendeeForm.register("email")} />
             </Field>
             <Field label="Phone" error={attendeeForm.formState.errors.phone?.message}>
-              <input className={fieldClass} autoComplete="tel" placeholder="+27 82 555 0142" {...attendeeForm.register("phone")} />
+              <div className={`flex h-12 overflow-hidden rounded-2xl border focus-within:ring-2 focus-within:ring-rose-600 ${attendeeForm.formState.errors.phone ? "border-rose-500" : "border-slate-200 dark:border-white/10"}`}>
+                <span className="inline-flex items-center border-r border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-slate-300">+27</span>
+                <input
+                  {...phoneField}
+                  onChange={(event) => {
+                    event.target.value = event.target.value.replace(/\D/g, "").slice(0, 10);
+                    void phoneField.onChange(event);
+                  }}
+                  className="min-w-0 flex-1 bg-transparent px-3 text-sm outline-none"
+                  type="tel"
+                  inputMode="numeric"
+                  autoComplete="tel-national"
+                  placeholder="10-digit mobile number"
+                  maxLength={10}
+                />
+              </div>
             </Field>
             <div className="flex gap-2 pt-2">
               <button type="button" onClick={() => setStep(0)} className="h-12 flex-1 rounded-2xl border border-slate-200 text-sm font-bold dark:border-white/10">Back</button>
@@ -178,14 +204,48 @@ export function EventDetailView({ event, startBooking = false }: { event: EventI
               <input className={fieldClass} autoComplete="cc-name" {...paymentForm.register("cardName")} />
             </Field>
             <Field label="Card number" error={paymentForm.formState.errors.cardNumber?.message}>
-              <input inputMode="numeric" autoComplete="cc-number" placeholder="4242 4242 4242 4242" className={fieldClass} {...paymentForm.register("cardNumber")} />
+              <input
+                {...cardNumberField}
+                onChange={(event) => {
+                  event.target.value = event.target.value.replace(/\D/g, "").slice(0, 16);
+                  void cardNumberField.onChange(event);
+                }}
+                inputMode="numeric"
+                autoComplete="cc-number"
+                placeholder="4242424242424242"
+                maxLength={16}
+                className={fieldClass}
+              />
             </Field>
             <div className="grid grid-cols-2 gap-3">
               <Field label="Expiry" error={paymentForm.formState.errors.expiry?.message}>
-                <input placeholder="MM/YY" autoComplete="cc-exp" className={fieldClass} {...paymentForm.register("expiry")} />
+                <input
+                  {...expiryField}
+                  onChange={(event) => {
+                    const digits = event.target.value.replace(/\D/g, "").slice(0, 4);
+                    event.target.value = digits.length >= 2 ? `${digits.slice(0, 2)}/${digits.slice(2)}` : digits;
+                    void expiryField.onChange(event);
+                  }}
+                  inputMode="numeric"
+                  placeholder="MM/YY"
+                  autoComplete="cc-exp"
+                  maxLength={5}
+                  className={fieldClass}
+                />
               </Field>
               <Field label="CVC" error={paymentForm.formState.errors.cvc?.message}>
-                <input inputMode="numeric" autoComplete="cc-csc" placeholder="123" className={fieldClass} {...paymentForm.register("cvc")} />
+                <input
+                  {...cvcField}
+                  onChange={(event) => {
+                    event.target.value = event.target.value.replace(/\D/g, "").slice(0, 3);
+                    void cvcField.onChange(event);
+                  }}
+                  inputMode="numeric"
+                  autoComplete="cc-csc"
+                  placeholder="123"
+                  maxLength={3}
+                  className={fieldClass}
+                />
               </Field>
             </div>
             {payError ? <p role="alert" className="text-sm font-medium text-rose-600">{payError}</p> : null}

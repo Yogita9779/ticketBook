@@ -27,7 +27,7 @@ export const checkoutSchema = z.object({
   cardNumber: z
     .string()
     .min(1, "Card number is required")
-    .refine((value) => /^\d{16}$/.test(value.replace(/\s+/g, "")), "Enter a 16-digit card number"),
+    .refine((value) => /^\d{16}$/.test(value.replace(/\s+/g, "")), "Enter a valid card number"),
   expiry: z
     .string()
     .regex(/^(0[1-9]|1[0-2])\/\d{2}$/, "Use MM/YY")
@@ -36,7 +36,7 @@ export const checkoutSchema = z.object({
       const expiry = new Date(2000 + year, month, 1);
       return expiry > new Date();
     }, "Card expiry must be in the future"),
-  cvc: z.string().regex(/^\d{3}$/, "Enter a 3-digit CVC"),
+  cvc: z.string().regex(/^\d{3}$/, "Enter a valid CVC"),
 });
 
 export const attendeeSchema = z.object({
@@ -44,8 +44,7 @@ export const attendeeSchema = z.object({
   email: z.string().min(1, "Email is required").email("Enter a valid email address"),
   phone: z
     .string()
-    .min(10, "Enter a valid phone number")
-    .regex(/^[0-9+\s()-]{10,18}$/, "Enter a valid phone number"),
+    .regex(/^\d{10}$/, "Enter a valid mobile number"),
 });
 
 export const paymentSchema = checkoutSchema.pick({
@@ -61,8 +60,7 @@ export const profileSchema = z.object({
   email: z.string().min(1, "Email is required").email("Enter a valid email address"),
   phone: z
     .string()
-    .min(10, "Enter a valid phone number")
-    .regex(/^[0-9+\s()-]{10,18}$/, "Enter a valid phone number"),
+    .regex(/^\d{10}$/, "Enter a valid mobile number"),
 });
 
 export type NewsletterValues = z.infer<typeof newsletterSchema>;

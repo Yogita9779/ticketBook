@@ -77,16 +77,16 @@ export const busDeals: BusDeal[] = [
 ];
 
 export const stayDeals: StayDeal[] = [
-  { id: "stay-01", name: "Rosebank Lane Hotel", city: "Johannesburg", area: "Rosebank", rating: 4.6, reviewCount: 812, pricePerNight: 1450, type: "Hotel", image: dealPhoto("th-stay-01") },
-  { id: "stay-02", name: "Skyline Suites Sandton", city: "Johannesburg", area: "Sandton", rating: 4.8, reviewCount: 1260, pricePerNight: 1890, type: "Suite", image: dealPhoto("th-stay-02") },
-  { id: "stay-03", name: "Harbour Quay Rooms", city: "Cape Town", area: "V&A Waterfront", rating: 4.7, reviewCount: 980, pricePerNight: 2100, type: "Hotel", image: dealPhoto("th-stay-03") },
-  { id: "stay-04", name: "Signal Cottage", city: "Cape Town", area: "Green Point", rating: 4.5, reviewCount: 430, pricePerNight: 1320, type: "Guesthouse", image: dealPhoto("th-stay-04") },
-  { id: "stay-05", name: "Umhlanga Palm Lodge", city: "Durban", area: "Umhlanga", rating: 4.4, reviewCount: 640, pricePerNight: 1180, type: "Lodge", image: dealPhoto("th-stay-05") },
-  { id: "stay-06", name: "Florida Road House", city: "Durban", area: "Morningside", rating: 4.3, reviewCount: 288, pricePerNight: 890, type: "Guesthouse", image: dealPhoto("th-stay-06") },
-  { id: "stay-07", name: "Jacaranda Court", city: "Pretoria", area: "Brooklyn", rating: 4.5, reviewCount: 510, pricePerNight: 980, type: "Hotel", image: dealPhoto("th-stay-07") },
-  { id: "stay-08", name: "Embassy Gardens Stay", city: "Pretoria", area: "Arcadia", rating: 4.2, reviewCount: 190, pricePerNight: 760, type: "Apart-hotel", image: dealPhoto("th-stay-08") },
-  { id: "stay-09", name: "Algoa Bay Hotel", city: "Port Elizabeth", area: "Summerstrand", rating: 4.6, reviewCount: 705, pricePerNight: 1240, type: "Hotel", image: dealPhoto("th-stay-09") },
-  { id: "stay-10", name: "Richmond Hill Lofts", city: "Port Elizabeth", area: "Richmond Hill", rating: 4.4, reviewCount: 256, pricePerNight: 820, type: "Loft", image: dealPhoto("th-stay-10") },
-  { id: "stay-11", name: "Stellenbosch Vine Rooms", city: "Cape Town", area: "Stellenbosch", rating: 4.9, reviewCount: 348, pricePerNight: 1680, type: "Lodge", image: dealPhoto("th-stay-11") },
-  { id: "stay-12", name: "Melville Porch Hotel", city: "Johannesburg", area: "Melville", rating: 4.3, reviewCount: 402, pricePerNight: 990, type: "Hotel", image: dealPhoto("th-stay-12") },
+  { id: "stay-01", name: "Rosebank Lane Hotel", city: "Johannesburg", area: "Rosebank", rating: 4.6, reviewCount: 812, pricePerNight: 1450, type: "Hotel", image: dealPhoto("th-stay-01"), isAvailable: true },
+  { id: "stay-02", name: "Skyline Suites Sandton", city: "Johannesburg", area: "Sandton", rating: 4.8, reviewCount: 1260, pricePerNight: 1890, type: "Suite", image: dealPhoto("th-stay-02"), isAvailable: true },
+  { id: "stay-03", name: "Harbour Quay Rooms", city: "Cape Town", area: "V&A Waterfront", rating: 4.7, reviewCount: 980, pricePerNight: 2100, type: "Hotel", image: dealPhoto("th-stay-03"), isAvailable: true },
+  { id: "stay-04", name: "Signal Cottage", city: "Cape Town", area: "Green Point", rating: 4.5, reviewCount: 430, pricePerNight: 1320, type: "Guesthouse", image: dealPhoto("th-stay-04"), isAvailable: true },
+  { id: "stay-05", name: "Umhlanga Palm Lodge", city: "Durban", area: "Umhlanga", rating: 4.4, reviewCount: 640, pricePerNight: 1180, type: "Lodge", image: dealPhoto("th-stay-05"), isAvailable: true },
+  { id: "stay-06", name: "Florida Road House", city: "Durban", area: "Morningside", rating: 4.3, reviewCount: 288, pricePerNight: 890, type: "Guesthouse", image: dealPhoto("th-stay-06"), isAvailable: false },
+  { id: "stay-07", name: "Jacaranda Court", city: "Pretoria", area: "Brooklyn", rating: 4.5, reviewCount: 510, pricePerNight: 980, type: "Hotel", image: dealPhoto("th-stay-07"), isAvailable: true },
+  { id: "stay-08", name: "Embassy Gardens Stay", city: "Pretoria", area: "Arcadia", rating: 4.2, reviewCount: 190, pricePerNight: 760, type: "Apart-hotel", image: dealPhoto("th-stay-08"), isAvailable: false },
+  { id: "stay-09", name: "Algoa Bay Hotel", city: "Port Elizabeth", area: "Summerstrand", rating: 4.6, reviewCount: 705, pricePerNight: 1240, type: "Hotel", image: dealPhoto("th-stay-09"), isAvailable: true },
+  { id: "stay-10", name: "Richmond Hill Lofts", city: "Port Elizabeth", area: "Richmond Hill", rating: 4.4, reviewCount: 256, pricePerNight: 820, type: "Loft", image: dealPhoto("th-stay-10"), isAvailable: true },
+  { id: "stay-11", name: "Stellenbosch Vine Rooms", city: "Cape Town", area: "Stellenbosch", rating: 4.9, reviewCount: 348, pricePerNight: 1680, type: "Lodge", image: dealPhoto("th-stay-11"), isAvailable: true },
+  { id: "stay-12", name: "Melville Porch Hotel", city: "Johannesburg", area: "Melville", rating: 4.3, reviewCount: 402, pricePerNight: 990, type: "Hotel", image: dealPhoto("th-stay-12"), isAvailable: true },
 ];

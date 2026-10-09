@@ -3,9 +3,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, MapPin, Star } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { StayAvailabilityCheck } from "@/components/accommodation/StayAvailabilityCheck";
 import { getStayDeals } from "@/lib/api";
-import { formatRand, toSearchString } from "@/lib/utils";
+import { formatRand } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -36,8 +36,7 @@ export default async function StayDetailPage({ params }: { params: { id: string 
           <aside className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm lg:sticky lg:top-24 sm:p-6">
             <p className="text-sm font-semibold text-rose-700">Featured stay</p><h2 className="mt-1 text-xl font-bold text-slate-900">Plan your visit</h2>
             <div className="mt-5 rounded-xl bg-slate-50 p-4"><p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Starting from</p><p className="mt-1 text-3xl font-extrabold text-slate-900">{formatRand(stay.pricePerNight)}<span className="ml-1 text-sm font-medium text-slate-500">/ night</span></p><p className="mt-2 text-sm text-slate-500">Rates may vary based on dates and availability.</p></div>
-            <Button asChild className="mt-5 h-12 w-full bg-rose-600 font-semibold hover:bg-rose-700"><Link href={toSearchString({ type: "accommodation", destination: stay.city })}>Check availability</Link></Button>
-            <p className="mt-3 text-center text-xs leading-5 text-slate-500">See available stays in {stay.city} and compare rates.</p>
+            <StayAvailabilityCheck isAvailable={stay.isAvailable} />
           </aside>
         </div>
         {similar.length > 0 ? <section className="mt-12" aria-labelledby="similar-stays-heading"><h2 id="similar-stays-heading" className="mb-5 text-xl font-bold text-slate-900">More stays in {stay.city}</h2><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{similar.map((item) => <Link key={item.id} href={`/accommodation/${item.id}`} className="group overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"><div className="relative aspect-[16/9]"><Image src={item.image} alt={item.name} fill sizes="(max-width: 640px) 100vw, 33vw" className="object-cover transition group-hover:scale-[1.03]" /></div><div className="p-4"><h3 className="font-bold text-slate-900 group-hover:text-rose-700">{item.name}</h3><p className="mt-1 text-sm text-slate-500">{item.area} · {formatRand(item.pricePerNight)} / night</p></div></Link>)}</div></section> : null}

@@ -14,13 +14,19 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAccount } from "@/lib/account-store";
+import { createPasswordCredential, derivePasswordHash } from "@/lib/password-auth";
 import { authSchema } from "@/lib/schemas";
 
 const registerSchema = z.object({
   firstName: z.string().min(2, "Enter your first name"),
   lastName: z.string().min(2, "Enter your last name"),
   email: z.string().min(1, "Email is required").email("Enter a valid email address"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .regex(/[A-Za-z]/, "Include at least one letter")
+    .regex(/\d/, "Include at least one number")
+    .regex(/[^A-Za-z0-9\s]/, "Include at least one symbol"),
   confirmPassword: z.string().min(8, "Confirm your password"),
   terms: z.boolean().refine((accepted) => accepted, "Please accept the terms and conditions"),
 }).refine((values) => values.password === values.confirmPassword, {
@@ -34,6 +40,7 @@ type RegisterValues = z.infer<typeof registerSchema>;
 export function AuthPagePanel() {
   const router = useRouter();
   const [tab, setTab] = useState("sign-in");
+  const [registeredEmail, setRegisteredEmail] = useState("");
   const isSignIn = tab === "sign-in";
 
   return (
@@ -53,8 +60,8 @@ export function AuthPagePanel() {
               <TabsTrigger value="sign-in" className="rounded-lg">Sign In</TabsTrigger>
               <TabsTrigger value="register" className="rounded-lg">Create Account</TabsTrigger>
             </TabsList>
-            <TabsContent value="sign-in"><SignInForm onSuccess={() => router.push("/dashboard")} /></TabsContent>
-            <TabsContent value="register"><RegisterForm /></TabsContent>
+            <TabsContent value="sign-in"><SignInForm key={registeredEmail} initialEmail={registeredEmail} onSuccess={() => router.push("/dashboard")} /></TabsContent>
+            <TabsContent value="register"><RegisterForm onRegistered={(email) => { setRegisteredEmail(email); setTab("sign-in"); }} /></TabsContent>
           </Tabs>
         </section>
       </div>
@@ -69,17 +76,29 @@ export function AuthPagePanel() {
   );
 }
 
-function SignInForm({ onSuccess }: { onSuccess: () => void }) {
+function SignInForm({ onSuccess, initialEmail }: { onSuccess: () => void; initialEmail: string }) {
   const [pending, setPending] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const form = useForm<SignInValues>({ resolver: zodResolver(authSchema), defaultValues: { email: "", password: "" } });
+  const form = useForm<SignInValues>({ resolver: zodResolver(authSchema), defaultValues: { email: initialEmail, password: "" } });
 
   return (
     <form className="mt-5 space-y-4" noValidate onSubmit={form.handleSubmit(async (values) => {
       setPending(true);
       await new Promise((resolve) => setTimeout(resolve, 350));
-      useAccount.getState().signIn({ email: values.email });
+      const accountKey = values.email.trim().toLowerCase();
+      const credential = useAccount.getState().credentialsByEmail[accountKey];
+      if (!credential) {
+        setPending(false);
+        toast.error("No account found. Create an account first.");
+        return;
+      }
+      const passwordHash = await derivePasswordHash(values.password, credential.salt);
+      const signedIn = useAccount.getState().signIn(values.email, passwordHash);
       setPending(false);
+      if (!signedIn) {
+        toast.error("Incorrect email or password.");
+        return;
+      }
       toast.success("Signed in. Welcome back to Bookora.");
       form.reset();
       onSuccess();
@@ -98,8 +117,7 @@ function SignInForm({ onSuccess }: { onSuccess: () => void }) {
   );
 }
 
-function RegisterForm() {
-  const router = useRouter();
+function RegisterForm({ onRegistered }: { onRegistered: (email: string) => void }) {
   const [pending, setPending] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -109,14 +127,22 @@ function RegisterForm() {
     <form className="mt-5 space-y-3.5" noValidate onSubmit={form.handleSubmit(async (values) => {
       setPending(true);
       await new Promise((resolve) => setTimeout(resolve, 350));
-      useAccount.getState().signIn({
+      const profile = {
         name: `${values.firstName} ${values.lastName}`,
         email: values.email,
-      });
+        phone: "",
+        avatar: "",
+      };
+      const credential = await createPasswordCredential(values.password);
+      const registered = useAccount.getState().registerAccount(profile, credential);
       setPending(false);
-      toast.success("Account created. You are ready to book.");
+      if (!registered) {
+        toast.error("An account with this email already exists. Please sign in.");
+        return;
+      }
+      toast.success("Account created. Sign in to continue.");
       form.reset();
-      router.push("/dashboard");
+      onRegistered(values.email);
     })}>
       <div className="grid gap-3 sm:grid-cols-2">
         <Field label="First Name" id="signup-first-name" error={form.formState.errors.firstName?.message}><Input id="signup-first-name" autoComplete="given-name" placeholder="John" className="h-7 border-0 bg-transparent px-0 shadow-none focus-visible:ring-0" {...form.register("firstName")} /></Field>

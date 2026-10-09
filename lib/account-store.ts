@@ -2,6 +2,7 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import type { PasswordCredential } from "@/lib/password-auth";
 import type {
   AccountNotice,
   AccountProfile,
@@ -21,11 +22,13 @@ interface AccountState {
   bookingReminders: boolean;
   profile: AccountProfile;
   profilesByEmail: Record<string, AccountProfile>;
+  credentialsByEmail: Record<string, PasswordCredential>;
   accountDataByEmail: Record<string, AccountData>;
   bookings: Booking[];
   activity: ActivityItem[];
   notices: AccountNotice[];
-  signIn: (patch?: Partial<AccountProfile>) => void;
+  signIn: (email: string, passwordHash: string) => boolean;
+  registerAccount: (profile: AccountProfile, credential: PasswordCredential) => boolean;
   signOut: () => void;
   setTheme: (theme: "light" | "dark") => void;
   toggleSidebar: () => void;
@@ -94,18 +97,6 @@ function uid(prefix: string) {
   return `${prefix}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
-function nameFromEmail(email: string) {
-  const localPart = email.trim().split("@")[0] ?? "";
-  const name = localPart
-    .replace(/[._-]+/g, " ")
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean)
-    .map((part) => part.charAt(0).toLocaleUpperCase() + part.slice(1))
-    .join(" ");
-  return name || "there";
-}
-
 export function createBookingId() {
   const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   let body = "";
@@ -117,7 +108,7 @@ export function createBookingId() {
 
 export const useAccount = create<AccountState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       signedIn: false,
       theme: "light",
       sidebarCollapsed: false,
@@ -125,43 +116,53 @@ export const useAccount = create<AccountState>()(
       bookingReminders: true,
       profile: defaultProfile,
       profilesByEmail: {},
+      credentialsByEmail: {},
       accountDataByEmail: {},
       bookings: [],
       activity: [],
       notices: [],
-      signIn: (patch) =>
+      signIn: (email, passwordHash) => {
+        const accountKey = email.trim().toLowerCase();
+        const credential = get().credentialsByEmail[accountKey];
+        if (!credential || credential.hash !== passwordHash) return false;
+        let signedIn = false;
         set((state) => {
-          const email = (patch?.email ?? state.profile.email).trim();
-          const accountKey = email.toLowerCase();
-          const savedProfile = accountKey ? state.profilesByEmail[accountKey] : undefined;
-          const baseProfile = savedProfile ?? {
-            ...defaultProfile,
-            name: email ? nameFromEmail(email) : state.profile.name,
-          };
-          const profile: AccountProfile = {
-            name: patch?.name ?? baseProfile.name,
-            email: email || baseProfile.email,
-            phone: patch?.phone ?? baseProfile.phone,
-            avatar: patch?.avatar ?? baseProfile.avatar,
-          };
+          const profile = state.profilesByEmail[accountKey];
+          if (!profile) return state;
           const accountDataByEmail = { ...state.accountDataByEmail };
           const currentKey = state.profile.email.trim().toLowerCase();
           if (currentKey) accountDataByEmail[currentKey] = accountDataFrom(state);
-          const accountData = accountKey
-            ? accountDataByEmail[accountKey] ?? { bookings: [], activity: [], notices: [] }
-            : accountDataFrom(state);
+          const accountData = accountDataByEmail[accountKey] ?? { bookings: [], activity: [], notices: [] };
+          signedIn = true;
           return {
             signedIn: true,
             profile,
-            profilesByEmail: accountKey
-              ? { ...state.profilesByEmail, [accountKey]: profile }
-              : state.profilesByEmail,
             accountDataByEmail,
             bookings: accountData.bookings,
             activity: accountData.activity,
             notices: accountData.notices,
           };
-        }),
+        });
+        return signedIn;
+      },
+      registerAccount: (profile, credential) => {
+        const accountKey = profile.email.trim().toLowerCase();
+        if (!accountKey) return false;
+        let registered = false;
+        set((state) => {
+          if (state.credentialsByEmail[accountKey]) return state;
+          registered = true;
+          const cleanProfile = { ...profile, email: profile.email.trim() };
+          const blankData = { bookings: [], activity: [], notices: [] };
+          return {
+            signedIn: false,
+            profilesByEmail: { ...state.profilesByEmail, [accountKey]: cleanProfile },
+            credentialsByEmail: { ...state.credentialsByEmail, [accountKey]: credential },
+            accountDataByEmail: { ...state.accountDataByEmail, [accountKey]: blankData },
+          };
+        });
+        return registered;
+      },
       signOut: () =>
         set((state) => {
           const accountKey = state.profile.email.trim().toLowerCase();
@@ -181,8 +182,15 @@ export const useAccount = create<AccountState>()(
           const previousKey = state.profile.email.trim().toLowerCase();
           const accountKey = profile.email.trim().toLowerCase();
           const profilesByEmail = { ...state.profilesByEmail };
+          const credentialsByEmail = { ...state.credentialsByEmail };
           const accountDataByEmail = { ...state.accountDataByEmail };
-          if (previousKey && previousKey !== accountKey) delete profilesByEmail[previousKey];
+          if (previousKey && previousKey !== accountKey) {
+            delete profilesByEmail[previousKey];
+            if (!credentialsByEmail[accountKey] && credentialsByEmail[previousKey]) {
+              credentialsByEmail[accountKey] = credentialsByEmail[previousKey];
+            }
+            delete credentialsByEmail[previousKey];
+          }
           if (accountKey) profilesByEmail[accountKey] = profile;
           if (previousKey && previousKey !== accountKey) delete accountDataByEmail[previousKey];
           if (accountKey) accountDataByEmail[accountKey] = accountDataFrom(state);
@@ -196,6 +204,7 @@ export const useAccount = create<AccountState>()(
           return {
             profile,
             profilesByEmail,
+            credentialsByEmail,
             accountDataByEmail,
             activity: [entry, ...state.activity].slice(0, 20),
           };
@@ -277,7 +286,7 @@ export const useAccount = create<AccountState>()(
     }),
     {
       name: "tickethub-account",
-      version: 3,
+      version: 4,
       skipHydration: true,
       migrate: (persistedState, version) => {
         const state = persistedState as Partial<AccountState>;
@@ -316,6 +325,13 @@ export const useAccount = create<AccountState>()(
                   },
                 }
               : migrated.accountDataByEmail ?? {},
+          };
+        }
+        if (version < 4) {
+          migrated = {
+            ...migrated,
+            signedIn: false,
+            credentialsByEmail: {},
           };
         }
         return migrated;

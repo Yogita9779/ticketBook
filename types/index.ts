@@ -101,6 +101,7 @@ export interface StayDeal {
   pricePerNight: number;
   type: string;
   image: string;
+  isAvailable: boolean;
 }
 
 export interface Voucher {
