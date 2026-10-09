@@ -27,7 +27,7 @@ export function NewsletterForm({ variant }: { variant: "band" | "footer" }) {
         setPending(true);
         await new Promise((resolve) => setTimeout(resolve, 450));
         setPending(false);
-        toast.success("Subscribed. Look out for TicketHub offers.");
+        toast.success("Subscribed. Look out for Bookora offers.");
         form.reset();
       })}
     >

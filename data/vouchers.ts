@@ -62,7 +62,7 @@ export const vouchers: Voucher[] = [
     category: "Travel",
     minAmount: 500,
     maxAmount: 5000,
-    description: "Put toward a TicketHub flight, bus or stay booked in the same name.",
+    description: "Put toward a Bookora flight, bus or stay booked in the same name.",
     image: voucherPhoto("Travel", 800, 500),
   },
   {

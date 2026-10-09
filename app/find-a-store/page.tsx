@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Find a Store",
-  description: "Find a TicketHub store for ticket collection and in-person bookings.",
+  description: "Find a Bookora store for ticket collection and in-person bookings.",
   alternates: { canonical: "/find-a-store" },
 };
 

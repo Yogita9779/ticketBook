@@ -23,7 +23,7 @@ export default async function EventsPage() {
 
   return (
     <main className="min-h-screen bg-[#f7f8fa] pb-14">
-      <section className="relative h-[280px] overflow-hidden bg-slate-950 sm:h-[380px] md:h-[440px] lg:h-[500px]" aria-label="Live the Moment">
+      <section className="relative aspect-[3/1] overflow-hidden bg-slate-950 sm:aspect-auto sm:h-[380px] md:h-[440px] lg:h-[500px]" aria-label="Live the Moment">
         <Image
           src="/live-the-moment.png"
           alt="Live the Moment — discover amazing live experiences happening near you"
@@ -34,7 +34,7 @@ export default async function EventsPage() {
         />
       </section>
 
-      <div className="container-page relative z-10 -mt-10 sm:-mt-14">
+      <div className="container-page relative z-10 sm:-mt-14">
         <section className="mx-auto w-full max-w-6xl rounded-2xl border border-slate-100 bg-white p-4 shadow-[0_14px_35px_rgba(15,23,42,0.12)] sm:p-5" aria-labelledby="find-event-heading">
           <h1 id="find-event-heading" className="text-center text-xl font-bold text-ink sm:text-2xl">
             Find Your Perfect Event

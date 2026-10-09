@@ -5,7 +5,7 @@ import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Contact Us",
-  description: "Contact TicketHub about bookings, refunds and store visits.",
+  description: "Contact Bookora about bookings, refunds and store visits.",
   alternates: { canonical: "/contact" },
 };
 

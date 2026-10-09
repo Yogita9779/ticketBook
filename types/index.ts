@@ -174,3 +174,53 @@ export interface CartLine {
   unitPrice: number;
   quantity: number;
 }
+
+export type BookingStatus = "confirmed" | "pending" | "cancelled";
+
+export interface Attendee {
+  name: string;
+  email: string;
+  phone: string;
+}
+
+export interface Booking {
+  id: string;
+  eventId: string;
+  slug: string;
+  title: string;
+  image: string;
+  venue: string;
+  city: string;
+  date: string;
+  category: EventCategory;
+  tierName: TicketTierName;
+  unitPrice: number;
+  quantity: number;
+  attendee: Attendee;
+  status: BookingStatus;
+  createdAt: string;
+}
+
+export interface AccountProfile {
+  name: string;
+  email: string;
+  phone: string;
+  avatar: string;
+}
+
+export interface ActivityItem {
+  id: string;
+  title: string;
+  detail: string;
+  at: string;
+  tone: "rose" | "emerald" | "amber" | "slate";
+}
+
+export interface AccountNotice {
+  id: string;
+  title: string;
+  body: string;
+  href: string;
+  at: string;
+  read: boolean;
+}

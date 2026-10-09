@@ -3,7 +3,7 @@ import type { Store } from "@/types";
 export const stores: Store[] = [
   {
     id: "store-1",
-    name: "TicketHub Rosebank",
+    name: "Bookora Rosebank",
     city: "Johannesburg",
     address: "Shop 12, The Grove, Cradock Avenue, Rosebank, Johannesburg, 2196",
     hours: "Mon–Sat 09:00–18:00, Sun 09:00–14:00",
@@ -11,7 +11,7 @@ export const stores: Store[] = [
   },
   {
     id: "store-2",
-    name: "TicketHub Sandton",
+    name: "Bookora Sandton",
     city: "Johannesburg",
     address: "Level 2, Liberty Plaza, Rivonia Road, Sandton, 2196",
     hours: "Mon–Fri 09:00–19:00, Sat 09:00–17:00, Sun 10:00–14:00",
@@ -19,7 +19,7 @@ export const stores: Store[] = [
   },
   {
     id: "store-3",
-    name: "TicketHub Victory Park",
+    name: "Bookora Victory Park",
     city: "Johannesburg",
     address: "Greenacres Office Park, Cnr Rustenburg & Victory Road, Victory Park, 2195",
     hours: "Mon–Fri 08:30–17:00",
@@ -27,7 +27,7 @@ export const stores: Store[] = [
   },
   {
     id: "store-4",
-    name: "TicketHub V&A",
+    name: "Bookora V&A",
     city: "Cape Town",
     address: "Shop 104, Watershed, Dock Road, V&A Waterfront, Cape Town, 8001",
     hours: "Mon–Sun 09:00–21:00",
@@ -35,7 +35,7 @@ export const stores: Store[] = [
   },
   {
     id: "store-5",
-    name: "TicketHub Canal Walk",
+    name: "Bookora Canal Walk",
     city: "Cape Town",
     address: "Shop 214, Canal Walk, Century City, Cape Town, 7441",
     hours: "Mon–Sat 09:00–19:00, Sun 09:00–17:00",
@@ -43,7 +43,7 @@ export const stores: Store[] = [
   },
   {
     id: "store-6",
-    name: "TicketHub Cavendish",
+    name: "Bookora Cavendish",
     city: "Cape Town",
     address: "Lower Level, Cavendish Square, Dreyer Street, Claremont, 7708",
     hours: "Mon–Sat 09:00–18:00, Sun 09:00–14:00",
@@ -51,7 +51,7 @@ export const stores: Store[] = [
   },
   {
     id: "store-7",
-    name: "TicketHub Gateway",
+    name: "Bookora Gateway",
     city: "Durban",
     address: "Shop U42, Gateway Theatre of Shopping, Umhlanga Ridge, 4319",
     hours: "Mon–Sun 09:00–19:00",
@@ -59,7 +59,7 @@ export const stores: Store[] = [
   },
   {
     id: "store-8",
-    name: "TicketHub Florida Road",
+    name: "Bookora Florida Road",
     city: "Durban",
     address: "148 Florida Road, Morningside, Durban, 4001",
     hours: "Mon–Fri 09:00–17:30, Sat 09:00–13:00",
@@ -67,7 +67,7 @@ export const stores: Store[] = [
   },
   {
     id: "store-9",
-    name: "TicketHub Brooklyn",
+    name: "Bookora Brooklyn",
     city: "Pretoria",
     address: "Shop 18, Brooklyn Mall, Fehrsen Street, Brooklyn, Pretoria, 0181",
     hours: "Mon–Sat 09:00–18:00, Sun 09:00–14:00",
@@ -75,7 +75,7 @@ export const stores: Store[] = [
   },
   {
     id: "store-10",
-    name: "TicketHub Menlyn",
+    name: "Bookora Menlyn",
     city: "Pretoria",
     address: "Shop 255, Menlyn Park, Atterbury Road, Pretoria, 0181",
     hours: "Mon–Sat 09:00–19:00, Sun 09:00–17:00",
@@ -83,7 +83,7 @@ export const stores: Store[] = [
   },
   {
     id: "store-11",
-    name: "TicketHub Baywest",
+    name: "Bookora Baywest",
     city: "Port Elizabeth",
     address: "Shop 77, Baywest Mall, Baywest Boulevard, Port Elizabeth, 6025",
     hours: "Mon–Sat 09:00–18:00, Sun 09:00–15:00",
@@ -91,7 +91,7 @@ export const stores: Store[] = [
   },
   {
     id: "store-12",
-    name: "TicketHub Richmond Hill",
+    name: "Bookora Richmond Hill",
     city: "Port Elizabeth",
     address: "22 Bird Street, Richmond Hill, Port Elizabeth, 6001",
     hours: "Mon–Fri 08:30–17:00, Sat 09:00–13:00",

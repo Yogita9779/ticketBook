@@ -59,7 +59,7 @@ function SignInForm({ onDone }: { onDone: () => void }) {
         setPending(true);
         await new Promise((resolve) => setTimeout(resolve, 400));
         setPending(false);
-        toast.success("Signed in. Welcome back to TicketHub.");
+        toast.success("Signed in. Welcome back to Bookora.");
         form.reset();
         onDone();
       })}

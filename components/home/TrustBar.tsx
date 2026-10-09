@@ -9,7 +9,7 @@ const items = [
 
 export function TrustBar() {
   return (
-    <section aria-label="Why TicketHub" className="container-page py-8 sm:py-10">
+    <section aria-label="Why Bookora" className="container-page py-8 sm:py-10">
       <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-4">
         {items.map((item) => (
           <li

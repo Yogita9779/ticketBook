@@ -2,6 +2,7 @@
 
 import { Facebook, Instagram } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { NewsletterForm } from "@/components/home/Newsletter";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { site } from "@/lib/site";
@@ -20,7 +21,7 @@ function XIcon() {
 function BrandBlock() {
   return (
     <div>
-      <p className="text-xl font-bold">TicketHub</p>
+      <p className="text-xl font-bold">Bookora</p>
       <p className="mt-3 max-w-xs text-sm text-white/75">
         Tickets, flights, buses, stays and vouchers. One checkout for a South African night out or a weekend away.
       </p>
@@ -109,6 +110,9 @@ function NewsBlock() {
 }
 
 export function Footer() {
+  const pathname = usePathname();
+  if (pathname.startsWith("/dashboard")) return null;
+
   return (
     <footer className="bg-brand text-white">
       <div className="container-page hidden gap-10 py-12 lg:grid lg:grid-cols-4">
@@ -117,10 +121,10 @@ export function Footer() {
         <ContactBlock />
         <NewsBlock />
       </div>
-      <div className="container-page py-4 lg:hidden">
+      <div className="container-page px-5 pt-6 pb-12 sm:px-6 lg:hidden">
         <Accordion type="single" collapsible>
           <AccordionItem value="brand" className="border-white/15">
-            <AccordionTrigger className="text-white">TicketHub</AccordionTrigger>
+            <AccordionTrigger className="text-white">Bookora</AccordionTrigger>
             <AccordionContent>
               <BrandBlock />
             </AccordionContent>
@@ -147,7 +151,7 @@ export function Footer() {
       </div>
       <div className="border-t border-white/15">
         <div className="container-page flex flex-col items-start justify-between gap-4 py-4 sm:flex-row sm:items-center">
-          <p className="text-xs text-white/75">© TicketHub (Pty) Ltd - 2026. All rights reserved.</p>
+          <p className="text-xs text-white/75">© Bookora (Pty) Ltd - 2026. All rights reserved.</p>
         </div>
       </div>
     </footer>

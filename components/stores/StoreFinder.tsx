@@ -33,7 +33,7 @@ export function StoreFinder({ stores }: { stores: Store[] }) {
       </div>
       {filtered.length === 0 ? (
         <div className="mt-6">
-          <EmptyState title="No stores in that city" message="Choose another city to see TicketHub branches." />
+          <EmptyState title="No stores in that city" message="Choose another city to see Bookora branches." />
         </div>
       ) : (
         <ul className="mt-6 grid gap-4 md:grid-cols-2">

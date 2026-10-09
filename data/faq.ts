@@ -20,7 +20,7 @@ export const faqs: FaqItem[] = [
     topic: "Payments",
     question: "Which payment methods do you accept?",
     answer:
-      "TicketHub accepts Visa, Mastercard and Instant EFT. Your card details are used only to authorise the mock checkout in this prototype. A service fee of 8% is shown in the order summary before you confirm.",
+      "Bookora accepts Visa, Mastercard and Instant EFT. Your card details are used only to authorise the mock checkout in this prototype. A service fee of 8% is shown in the order summary before you confirm.",
   },
   {
     id: "faq-4",
@@ -34,7 +34,7 @@ export const faqs: FaqItem[] = [
     topic: "Refunds",
     question: "What is the refund policy if an event is cancelled?",
     answer:
-      "If an organiser cancels or postpones an event, TicketHub emails every ticket holder with the next step. Cancelled events are refunded to the original payment method, including the service fee. Postponed events keep your ticket valid for the new date unless you request a refund.",
+      "If an organiser cancels or postpones an event, Bookora emails every ticket holder with the next step. Cancelled events are refunded to the original payment method, including the service fee. Postponed events keep your ticket valid for the new date unless you request a refund.",
   },
   {
     id: "faq-6",
@@ -60,7 +60,7 @@ export const faqs: FaqItem[] = [
   {
     id: "faq-9",
     topic: "Stores",
-    question: "Can I collect tickets from a TicketHub store?",
+    question: "Can I collect tickets from a Bookora store?",
     answer:
       "Yes. Choose store collection when it is offered, then bring your order number and a photo ID to the branch. Store hours are listed on the Find a Store page. Collection opens two hours after the booking confirmation email arrives.",
   },

@@ -1,23 +1,23 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { DashboardHome } from "@/components/dashboard/DashboardHome";
+import { SavedView } from "@/components/dashboard/SavedView";
 import { HomeSkeleton } from "@/components/dashboard/ui";
 import { getEvents } from "@/lib/api";
 
 export const metadata: Metadata = {
-  title: "Dashboard",
-  description: "Manage your Bookora bookings, saved events and account.",
+  title: "Saved items",
+  description: "Events you saved on Bookora.",
 };
 
-export default function DashboardPage() {
+export default function SavedPage() {
   return (
     <Suspense fallback={<HomeSkeleton />}>
-      <DashboardLoader />
+      <SavedLoader />
     </Suspense>
   );
 }
 
-async function DashboardLoader() {
+async function SavedLoader() {
   const events = await getEvents();
-  return <DashboardHome events={events} />;
+  return <SavedView events={events} />;
 }

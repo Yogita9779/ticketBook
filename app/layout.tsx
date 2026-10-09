@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
     default: "Buy Tickets Online – Events, Travel, Flights & More",
-    template: "%s · TicketHub",
+    template: "%s · Bookora",
   },
   description: site.description,
   keywords: [
@@ -45,11 +45,11 @@ export const metadata: Metadata = {
     "Pretoria",
     "South Africa",
   ],
-  applicationName: "TicketHub",
-  authors: [{ name: "TicketHub" }],
+  applicationName: "Bookora",
+  authors: [{ name: "Bookora" }],
   appleWebApp: {
     capable: true,
-    title: "TicketHub",
+    title: "Bookora",
     statusBarStyle: "black-translucent",
   },
   other: {
@@ -60,7 +60,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_ZA",
     url: "/",
-    siteName: "TicketHub",
+    siteName: "Bookora",
     title: "Buy Tickets Online – Events, Travel, Flights & More",
     description: site.description,
     images: [
@@ -68,7 +68,7 @@ export const metadata: Metadata = {
         url: "https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=1200&h=630&q=85",
         width: 1200,
         height: 630,
-        alt: "TicketHub events and travel",
+        alt: "Bookora events and travel",
       },
     ],
   },

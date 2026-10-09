@@ -1,5 +1,5 @@
 export const site = {
-  name: "TicketHub",
+  name: "Bookora",
   url: "https://tickethub.example.com",
   description:
     "Book tickets for events, concerts, theatre, flights, bus travel, vouchers and stays – all in one place.",

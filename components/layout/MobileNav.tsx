@@ -22,7 +22,7 @@ export function MobileNav({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="left" className="w-[min(100%,20rem)] overflow-y-auto">
         <SheetHeader>
-          <SheetTitle>TicketHub</SheetTitle>
+          <SheetTitle>Bookora</SheetTitle>
           <SheetDescription>Browse events, travel and vouchers.</SheetDescription>
         </SheetHeader>
         <nav aria-label="Mobile" className="mt-4 px-5 pb-8">

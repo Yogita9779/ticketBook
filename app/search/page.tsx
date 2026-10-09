@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Search",
-  description: "Search TicketHub for events, flights, buses, stays and vouchers.",
+  description: "Search Bookora for events, flights, buses, stays and vouchers.",
   alternates: { canonical: "/search" },
 };
 

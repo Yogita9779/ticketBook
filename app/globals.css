@@ -58,6 +58,25 @@ body {
   outline-offset: 2px;
 }
 
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  .ticket-print,
+  .ticket-print * {
+    visibility: visible;
+  }
+
+  .ticket-print {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    box-shadow: none !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

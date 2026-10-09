@@ -3,7 +3,7 @@ import { AuthPagePanel } from "@/components/auth/AuthPagePanel";
 
 export const metadata: Metadata = {
   title: "Sign In or Create Account",
-  description: "Sign in to your TicketHub account or create a new account.",
+  description: "Sign in to your Bookora account or create a new account.",
   alternates: { canonical: "/login" },
 };
 

@@ -2,11 +2,13 @@
 
 import { X } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const STORAGE_KEY = "tickethub-announcement-dismissed";
 
 export function AnnouncementBar() {
+  const pathname = usePathname();
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
@@ -15,7 +17,7 @@ export function AnnouncementBar() {
     }
   }, []);
 
-  if (!visible) return null;
+  if (!visible || pathname.startsWith("/dashboard")) return null;
 
   return (
     <div className="bg-brand text-white">

@@ -39,6 +39,35 @@ export const checkoutSchema = z.object({
   cvc: z.string().regex(/^\d{3}$/, "Enter a 3-digit CVC"),
 });
 
+export const attendeeSchema = z.object({
+  name: z.string().min(2, "Enter the attendee name"),
+  email: z.string().min(1, "Email is required").email("Enter a valid email address"),
+  phone: z
+    .string()
+    .min(10, "Enter a valid phone number")
+    .regex(/^[0-9+\s()-]{10,18}$/, "Enter a valid phone number"),
+});
+
+export const paymentSchema = checkoutSchema.pick({
+  cardNumber: true,
+  expiry: true,
+  cvc: true,
+}).extend({
+  cardName: z.string().min(2, "Enter the name on the card"),
+});
+
+export const profileSchema = z.object({
+  name: z.string().min(2, "Enter your name"),
+  email: z.string().min(1, "Email is required").email("Enter a valid email address"),
+  phone: z
+    .string()
+    .min(10, "Enter a valid phone number")
+    .regex(/^[0-9+\s()-]{10,18}$/, "Enter a valid phone number"),
+});
+
 export type NewsletterValues = z.infer<typeof newsletterSchema>;
 export type ContactValues = z.infer<typeof contactSchema>;
 export type CheckoutValues = z.infer<typeof checkoutSchema>;
+export type AttendeeValues = z.infer<typeof attendeeSchema>;
+export type PaymentValues = z.infer<typeof paymentSchema>;
+export type ProfileValues = z.infer<typeof profileSchema>;

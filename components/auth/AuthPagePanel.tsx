@@ -13,6 +13,7 @@ import { FieldError } from "@/components/ui/FieldError";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useAccount } from "@/lib/account-store";
 import { authSchema } from "@/lib/schemas";
 
 const registerSchema = z.object({
@@ -37,7 +38,7 @@ export function AuthPagePanel() {
 
   return (
     <>
-      <section className="relative h-[250px] overflow-hidden bg-gradient-to-r from-rose-600 via-rose-900 to-slate-950 text-white sm:h-[295px]" aria-label="TicketHub account">
+      <section className="relative h-[250px] overflow-hidden bg-gradient-to-r from-rose-600 via-rose-900 to-slate-950 text-white sm:h-[295px]" aria-label="Bookora account">
         <CircleUserRound className="absolute -right-5 top-8 h-48 w-48 text-white/[0.09] sm:right-8 sm:top-6 sm:h-56 sm:w-56" strokeWidth={1.4} aria-hidden="true" />
         <div className="container-page relative pt-10 sm:pt-12">
           <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">{isSignIn ? "Sign In" : "Create Account"}</h1>
@@ -74,11 +75,12 @@ function SignInForm({ onSuccess }: { onSuccess: () => void }) {
   const form = useForm<SignInValues>({ resolver: zodResolver(authSchema), defaultValues: { email: "", password: "" } });
 
   return (
-    <form className="mt-5 space-y-4" noValidate onSubmit={form.handleSubmit(async () => {
+    <form className="mt-5 space-y-4" noValidate onSubmit={form.handleSubmit(async (values) => {
       setPending(true);
       await new Promise((resolve) => setTimeout(resolve, 350));
+      useAccount.getState().signIn({ email: values.email });
       setPending(false);
-      toast.success("Signed in. Welcome back to TicketHub.");
+      toast.success("Signed in. Welcome back to Bookora.");
       form.reset();
       onSuccess();
     })}>
@@ -97,18 +99,24 @@ function SignInForm({ onSuccess }: { onSuccess: () => void }) {
 }
 
 function RegisterForm() {
+  const router = useRouter();
   const [pending, setPending] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const form = useForm<RegisterValues>({ resolver: zodResolver(registerSchema), defaultValues: { firstName: "", lastName: "", email: "", password: "", confirmPassword: "", terms: false } });
 
   return (
-    <form className="mt-5 space-y-3.5" noValidate onSubmit={form.handleSubmit(async () => {
+    <form className="mt-5 space-y-3.5" noValidate onSubmit={form.handleSubmit(async (values) => {
       setPending(true);
       await new Promise((resolve) => setTimeout(resolve, 350));
+      useAccount.getState().signIn({
+        name: `${values.firstName} ${values.lastName}`,
+        email: values.email,
+      });
       setPending(false);
       toast.success("Account created. You are ready to book.");
       form.reset();
+      router.push("/dashboard");
     })}>
       <div className="grid gap-3 sm:grid-cols-2">
         <Field label="First Name" id="signup-first-name" error={form.formState.errors.firstName?.message}><Input id="signup-first-name" autoComplete="given-name" placeholder="John" className="h-7 border-0 bg-transparent px-0 shadow-none focus-visible:ring-0" {...form.register("firstName")} /></Field>

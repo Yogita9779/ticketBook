@@ -3,14 +3,14 @@ import { PageHero } from "@/components/layout/PageHero";
 
 export const metadata: Metadata = {
   title: "Legal Terms",
-  description: "TicketHub terms of use, privacy notes and refund rules for this prototype.",
+  description: "Bookora terms of use, privacy notes and refund rules for this prototype.",
   alternates: { canonical: "/legal" },
 };
 
 const sections = [
   {
     title: "Terms of use",
-    body: "TicketHub is a demonstration storefront. Listings, prices and availability are mock data generated for the prototype. By browsing you agree that orders placed here are simulated and do not create a contract with a venue, airline or hotel.",
+    body: "Bookora is a demonstration storefront. Listings, prices and availability are mock data generated for the prototype. By browsing you agree that orders placed here are simulated and do not create a contract with a venue, airline or hotel.",
   },
   {
     title: "Tickets",
@@ -26,7 +26,7 @@ const sections = [
   },
   {
     title: "Refunds",
-    body: "Because no payment is captured, there is nothing to refund. The FAQ describes how a live TicketHub service would handle cancellations, postponements and name changes so the interface can be reviewed end to end.",
+    body: "Because no payment is captured, there is nothing to refund. The FAQ describes how a live Bookora service would handle cancellations, postponements and name changes so the interface can be reviewed end to end.",
   },
 ];
 

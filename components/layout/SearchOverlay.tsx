@@ -48,7 +48,7 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-[70] bg-white" role="dialog" aria-modal="true" aria-label="Search TicketHub">
+    <div className="fixed inset-0 z-[70] bg-white" role="dialog" aria-modal="true" aria-label="Search Bookora">
       <div className="container-page py-4">
         <form
           className="flex items-center gap-2"

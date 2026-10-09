@@ -6,7 +6,7 @@ export function AppPromoBanner() {
     <section className="container-page py-12" aria-labelledby="app-heading">
       <div className="grid items-center gap-8 overflow-hidden rounded-card bg-brand px-6 py-10 text-white shadow-card lg:grid-cols-2 lg:px-12">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-wide text-white/70">TicketHub app</p>
+          <p className="text-sm font-semibold uppercase tracking-wide text-white/70">Bookora app</p>
           <h2 id="app-heading" className="mt-2 text-3xl font-bold tracking-tight">
             Tickets in your pocket
           </h2>
@@ -33,7 +33,7 @@ export function AppPromoBanner() {
             <div className="relative aspect-[9/16] overflow-hidden rounded-[1.4rem]">
               <Image
                 src={photoUrl("1512941937669-90a1b58e7e9", 600, 1000)}
-                alt="Phone showing a TicketHub event ticket"
+                alt="Phone showing a Bookora event ticket"
                 fill
                 sizes="192px"
                 className="object-cover"
