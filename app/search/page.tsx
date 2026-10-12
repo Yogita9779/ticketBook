@@ -59,7 +59,14 @@ export default async function SearchPage({
               }
             />
           ) : (
-            <ResultGrid query={query} results={results} />
+            <>
+              {query.type === "bus" && query.to && !((results as Awaited<ReturnType<typeof searchBuses>>).items.some((deal) => deal.to.toLowerCase().includes(query.to.toLowerCase()))) ? (
+                <p className="mb-4 rounded-xl bg-amber-50 px-4 py-3 text-sm text-amber-900">
+                  No exact bus route is listed for “{query.to}” yet. Showing available routes instead.
+                </p>
+              ) : null}
+              <ResultGrid query={query} results={results} />
+            </>
           )}
           <Pagination query={query} page={results.page} pages={results.pages} />
         </div>

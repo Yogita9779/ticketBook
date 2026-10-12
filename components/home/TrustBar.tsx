@@ -4,7 +4,7 @@ const items = [
   { icon: ShieldCheck, title: "Secure payments", text: "Visa, Mastercard and Instant EFT", tone: "rose" },
   { icon: Ticket, title: "Instant e-tickets", text: "QR codes in your inbox", tone: "violet" },
   { icon: Headphones, title: "24/7 support", text: "Help before and after the show", tone: "sky" },
-  { icon: Users, title: "Millions of happy customers", text: "Booked across South Africa", tone: "amber" },
+  { icon: Users, title: "Millions of happy customers", text: "Booked across Zimbabwe", tone: "amber" },
 ];
 
 export function TrustBar() {

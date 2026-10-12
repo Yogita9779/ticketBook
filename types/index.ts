@@ -34,11 +34,6 @@ export const ZIMBABWE_URBAN_CENTRES = [
 ] as const;
 
 export const CITIES = [
-  "Johannesburg",
-  "Cape Town",
-  "Durban",
-  "Pretoria",
-  "Port Elizabeth",
   ...ZIMBABWE_URBAN_CENTRES,
 ] as const;
 

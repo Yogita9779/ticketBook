@@ -1,6 +1,6 @@
 # Bookora
 
-A responsive front-end prototype of a ticketing and travel marketplace. It is inspired by the layout of a South African ticket site, with original Bookora branding and mock data only.
+A responsive front-end prototype of a ticketing and travel marketplace for Zimbabwe, with original Bookora branding and mock data only.
 
 ## Setup
 

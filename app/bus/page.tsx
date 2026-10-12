@@ -40,7 +40,7 @@ export default function BusPage() {
       <section className="mx-auto mt-12 w-full max-w-[1600px] px-4 sm:mt-16 sm:px-6 lg:px-8" aria-labelledby="bus-carriers-heading">
         <div className="mb-8 text-center">
           <h2 id="bus-carriers-heading" className="text-2xl font-extrabold tracking-tight text-rose-600 sm:text-3xl">Bus Carrier Offerings</h2>
-          <p className="mt-2 text-sm text-ink-muted">Explore popular routes and coach operators across South Africa.</p>
+          <p className="mt-2 text-sm text-ink-muted">Explore popular routes and coach operators across Zimbabwe.</p>
         </div>
         <Suspense fallback={<DealGridSkeleton />}>
           <BusGrid />

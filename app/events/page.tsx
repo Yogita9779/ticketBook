@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Events",
-  description: "Discover live music, sport, comedy, theatre and more across South Africa.",
+  description: "Discover live music, sport, comedy, theatre and more across Zimbabwe.",
   alternates: { canonical: "/events" },
 };
 

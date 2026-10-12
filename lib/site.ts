@@ -3,13 +3,13 @@ export const site = {
   url: "https://tickethub.example.com",
   description:
     "Book tickets for events, concerts, theatre, flights, bus travel, vouchers and stays – all in one place.",
-  phone: "0861 915 800",
-  phoneHref: "tel:0861915800",
+  phone: "+263 242 555 0100",
+  phoneHref: "tel:+2632425550100",
   email: "info@example.com",
-  addressLines: ["Greenacres Office Park", "Victory Park 2195"],
-  address: "Greenacres Office Park, Victory Park 2195",
+  addressLines: ["Central Business District", "Harare, Zimbabwe"],
+  address: "Central Business District, Harare, Zimbabwe",
   mapUrl:
-    "https://www.google.com/maps/search/?api=1&query=Greenacres%20Office%20Park%20Victory%20Park%202195",
+    "https://www.google.com/maps/search/?api=1&query=Central%20Business%20District%2C%20Harare%2C%20Zimbabwe",
   socials: [
     { label: "Facebook", href: "https://www.facebook.com/tickethub" },
     { label: "X", href: "https://x.com/tickethub" },

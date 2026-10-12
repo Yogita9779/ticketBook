@@ -7,18 +7,8 @@ import { TrustBar } from "@/components/home/TrustBar";
 import {
   CategoryGridSkeleton,
   DealGridSkeleton,
-  EventRowSkeleton,
-  TrendingSkeleton,
   VoucherRowSkeleton,
 } from "@/components/ui/Skeletons";
-
-const FeaturedEvents = dynamic(() => import("@/components/home/FeaturedEvents"), {
-  loading: () => (
-    <div className="container-page py-10">
-      <EventRowSkeleton />
-    </div>
-  ),
-});
 
 const BrowseByCategory = dynamic(() => import("@/components/home/BrowseByCategory"), {
   loading: () => (
@@ -26,14 +16,6 @@ const BrowseByCategory = dynamic(() => import("@/components/home/BrowseByCategor
       <div className="container-page">
         <CategoryGridSkeleton />
       </div>
-    </div>
-  ),
-});
-
-const TrendingNow = dynamic(() => import("@/components/home/TrendingNow"), {
-  loading: () => (
-    <div className="container-page py-12">
-      <TrendingSkeleton />
     </div>
   ),
 });
@@ -83,14 +65,8 @@ export function HomePage() {
       <div className="relative">
         <HeroCarousel />
       </div>
-      <Suspense fallback={<div className="container-page py-10"><EventRowSkeleton /></div>}>
-        <FeaturedEvents />
-      </Suspense>
       <Suspense fallback={<div className="bg-canvas py-12"><div className="container-page"><CategoryGridSkeleton /></div></div>}>
         <BrowseByCategory />
-      </Suspense>
-      <Suspense fallback={<div className="container-page py-12"><TrendingSkeleton /></div>}>
-        <TrendingNow />
       </Suspense>
       <Suspense fallback={<div className="container-page py-12"><DealGridSkeleton /></div>}>
         <TravelDeals />

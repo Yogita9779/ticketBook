@@ -19,7 +19,7 @@ export function DashboardHome({ events }: { events: EventItem[] }) {
   const reduced = useReducedMotion();
   const scroller = useRef<HTMLDivElement>(null);
   const [carouselPaused, setCarouselPaused] = useState(false);
-  const [currency, setCurrency] = useState<DisplayCurrency>("USD");
+  const [currency, setCurrency] = useState<DisplayCurrency>("ZWG");
   const firstName = profile.name.trim().split(/\s+/)[0] || "there";
   const savedEvents = saved.ready ? events.filter((event) => saved.has(event.id)) : [];
   const upcoming = bookings.filter((booking) => isUpcoming(booking)).slice(0, 3);
@@ -142,10 +142,10 @@ export function DashboardHome({ events }: { events: EventItem[] }) {
             <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Popular nights out, picked from events near your cities.</p>
           </div>
           <div className="flex shrink-0 items-center gap-2 rounded-full border border-slate-100 bg-white px-3 py-2 text-xs shadow-sm dark:border-white/10 dark:bg-[#161922] sm:gap-3 sm:px-4 sm:text-sm">
-            <span className="font-semibold text-slate-800 dark:text-slate-100">Prices in {currency}</span>
+            <span className="font-semibold text-slate-800 dark:text-slate-100">Prices in {currency === "USD" ? "USD" : "ZiG"}</span>
             <span className="text-slate-300" aria-hidden="true">|</span>
             <span className="text-slate-500 dark:text-slate-400" title="RBZ average rate, 9 October 2026">
-              1 USD = {currency === "USD" ? "1 USD" : `${USD_TO_ZWG_RATE} ZWG`}
+              1 USD = {currency === "USD" ? "1 USD" : `${USD_TO_ZWG_RATE} ZiG`}
             </span>
             <select
               aria-label="Recommendation price currency"
@@ -154,7 +154,7 @@ export function DashboardHome({ events }: { events: EventItem[] }) {
               className="h-8 rounded-full border border-emerald-500 bg-white px-2 text-xs font-semibold text-slate-800 outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 dark:bg-[#161922] dark:text-white sm:text-sm"
             >
               <option value="USD">USD</option>
-              <option value="ZWG">ZWG</option>
+              <option value="ZWG">ZiG</option>
             </select>
           </div>
         </div>

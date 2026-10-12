@@ -62,7 +62,7 @@ export function EventBrowser({ events }: { events: EventItem[] }) {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-extrabold tracking-tight">Browse events</h1>
-        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">{events.length} experiences across South Africa. Filter by city, category or date.</p>
+        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">{events.length} experiences across Zimbabwe. Filter by city, category or date.</p>
       </div>
       <form
         className={`${dashCard} grid gap-3 p-4 md:grid-cols-2 xl:grid-cols-6`}

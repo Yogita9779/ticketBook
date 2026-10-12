@@ -166,14 +166,24 @@ export async function searchFlights(query: SearchQuery) {
 
 export async function searchBuses(query: SearchQuery) {
   await wait();
-  let list = busDeals.filter((deal) => {
+  const matchesOtherFilters = (deal: (typeof busDeals)[number]) => {
     const fromOk = !query.origin && !query.from ? true : includesCity(deal.from, query.origin || query.from);
-    const toOk = !query.to || includesCity(deal.to, query.to);
     const text = `${deal.from} ${deal.to} ${deal.operator}`.toLowerCase();
     const qOk = !query.q || text.includes(query.q.toLowerCase());
     const priceOk = deal.price >= query.minPrice && deal.price <= query.maxPrice;
-    return fromOk && toOk && qOk && priceOk;
-  });
+    return fromOk && qOk && priceOk;
+  };
+  const candidates = busDeals.filter(matchesOtherFilters);
+  const destinationMatches = candidates.filter((deal) => !query.to || includesCity(deal.to, query.to));
+  // Bus inventory is a small Zimbabwe demo dataset. If a typed destination is
+  // outside its routes, still show available route options for the chosen origin.
+  let list = destinationMatches.length > 0 ? destinationMatches : candidates;
+
+  // Keep a result available even if the typed origin or other free-text query
+  // does not match this limited demo inventory.
+  if (list.length === 0 && busDeals.length > 0) {
+    list = busDeals.filter((deal) => deal.price >= query.minPrice && deal.price <= query.maxPrice);
+  }
   list = sortByPrice(list, query.sort);
   return paginate(list, query.page);
 }
@@ -182,13 +192,20 @@ export async function searchStays(query: SearchQuery) {
   await wait();
   const place = query.destination || query.city || query.q;
   const [suburb, city] = place.split(",").map((part) => part.trim());
-  let list = stayDeals.filter((deal) => {
+  const matchesPlace = (deal: (typeof stayDeals)[number]) => {
     const searchablePlace = `${deal.city} ${deal.area} ${deal.name}`.toLowerCase();
-    const placeOk = !place || searchablePlace.includes(place.toLowerCase()) ||
+    return !place || searchablePlace.includes(place.toLowerCase()) ||
       (Boolean(city) && searchablePlace.includes(city.toLowerCase()) && searchablePlace.includes(suburb.toLowerCase()));
+  };
+  let list = stayDeals.filter((deal) => {
+    const placeOk = matchesPlace(deal);
     const priceOk = deal.pricePerNight >= query.minPrice && deal.pricePerNight <= query.maxPrice;
     return placeOk && priceOk;
   });
+  if (list.length === 0 && place && city) {
+    const cityFallback = stayDeals.filter((deal) => deal.city.toLowerCase() === city.toLowerCase());
+    list = cityFallback.filter((deal) => deal.pricePerNight >= query.minPrice && deal.pricePerNight <= query.maxPrice);
+  }
   if (query.sort === "price-asc") list = [...list].sort((a, b) => a.pricePerNight - b.pricePerNight);
   else if (query.sort === "price-desc") list = [...list].sort((a, b) => b.pricePerNight - a.pricePerNight);
   else if (query.sort === "date") list = [...list].sort((a, b) => b.rating - a.rating);

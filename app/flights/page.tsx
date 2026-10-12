@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Flights",
-  description: "Search domestic flight deals across South Africa.",
+  description: "Search domestic flight deals across Zimbabwe.",
   alternates: { canonical: "/flights" },
 };
 

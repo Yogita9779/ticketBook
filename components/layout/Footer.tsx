@@ -23,7 +23,7 @@ function BrandBlock() {
     <div>
       <p className="text-xl font-bold">Bookora</p>
       <p className="mt-3 max-w-xs text-sm text-white/75">
-        Tickets, flights, buses, stays and vouchers. One checkout for a South African night out or a weekend away.
+        Tickets, flights, buses, stays and vouchers. One checkout for a Zimbabwean night out or a weekend away.
       </p>
       <ul className="mt-4 flex gap-2">
         {site.socials.map((item) => (

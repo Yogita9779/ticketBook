@@ -43,7 +43,7 @@ export function formatCurrency(value: number) {
   // Avoid locale-dependent grouping characters (including NBSP) so server and
   // browser render identical text during hydration.
   const amount = String(Math.round(value)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  return `$${amount}`;
+  return `ZiG ${amount}`;
 }
 
 export type DisplayCurrency = "USD" | "ZWG";
@@ -54,7 +54,7 @@ export const USD_TO_ZWG_RATE = 26.6875;
 export function formatDisplayCurrency(value: number, currency: DisplayCurrency) {
   const amount = currency === "ZWG" ? value * USD_TO_ZWG_RATE : value;
   const formatted = String(Math.round(amount)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  return currency === "USD" ? `$${formatted}` : `ZWG ${formatted}`;
+  return currency === "USD" ? `USD ${formatted}` : `ZiG ${formatted}`;
 }
 
 // Keep the previous export name for existing components while displaying Zimbabwe's currency symbol.

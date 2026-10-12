@@ -5,7 +5,7 @@ import { categoryPhoto } from "@/lib/photo-library";
 export const heroSlides: HeroSlide[] = [
   {
     id: "hero-concerts",
-    title: "Live music under the highveld sky",
+    title: "Live music under Zimbabwe skies",
     subtitle: "Concerts, festivals and late-night sessions across Zimbabwe.",
     cta: "Browse concerts",
     href: "/search?type=events&category=Concerts",
@@ -14,8 +14,8 @@ export const heroSlides: HeroSlide[] = [
   },
   {
     id: "hero-flights",
-    title: "Weekend escapes from $899",
-    subtitle: "Compare flight deals between Johannesburg, Cape Town, Durban and beyond.",
+    title: "Weekend escapes from ZiG 145",
+    subtitle: "Compare flights between Harare, Bulawayo, Victoria Falls and beyond.",
     cta: "Search flights",
     href: "/flights",
     image: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=2000&q=85",
@@ -117,30 +117,12 @@ export const categoryTiles: CategoryTile[] = [
 ];
 
 export const airports = [
-  { city: "Johannesburg", code: "JNB" },
-  { city: "Cape Town", code: "CPT" },
-  { city: "Durban", code: "DUR" },
-  { city: "Port Elizabeth", code: "PLZ" },
-  { city: "Pretoria", code: "HLA" },
-  { city: "East London", code: "ELS" },
-  { city: "George", code: "GRJ" },
-  { city: "Bloemfontein", code: "BFN" },
   { city: "Harare", code: "HRE" },
   { city: "Bulawayo", code: "BUQ" },
   { city: "Victoria Falls", code: "VFA" },
 ];
 
 export const busCities = [
-  "Johannesburg",
-  "Pretoria",
-  "Cape Town",
-  "Durban",
-  "Port Elizabeth",
-  "Bloemfontein",
-  "East London",
-  "Polokwane",
-  "Nelspruit",
-  "Kimberley",
   ...ZIMBABWE_URBAN_CENTRES,
 ];
 
@@ -157,7 +139,7 @@ export const zimbabweSuburbsByCity: Record<(typeof ZIMBABWE_URBAN_CENTRES)[numbe
   Masvingo: ["Mucheke", "Rujeko", "Rhodene", "Target Kopje", "Eastvale", "Runyararo", "Hillside", "Zimre Park", "Clipsham Park", "Clipsham View"],
   Chinhoyi: ["Chikonohono", "Ruvimbo", "Coldstream", "Orange Grove", "Alaska", "Brundish"],
   Marondera: ["Dombotombo", "Nyameni", "Cherutombo", "Rudhaka", "Paradise", "Greenwood Park"],
-  Norton: ["Knowe", "Knowe Phase 2", "Knowe Phase 3", "Katanga", "Maridale", "Ngoni", "Galloway", "Calfa", "Twin Lakes", "Nharira", "Mwashuma Park", "Johannesburg"],
+  Norton: ["Knowe", "Knowe Phase 2", "Knowe Phase 3", "Katanga", "Maridale", "Ngoni", "Galloway", "Calfa", "Twin Lakes", "Nharira", "Mwashuma Park"],
   Ruwa: ["Zimre Park", "Damofalls", "Mabvazuva", "Springvale", "Murisa Park", "Ruwa Town Centre"],
   Chegutu: ["Chinengundu", "Pfupajena", "Kaguvi", "Umvovo", "Hintonville", "Gadzema"],
   Zvishavane: ["Mandava", "Maglas", "Highlands", "Riverside", "Mabasa"],
