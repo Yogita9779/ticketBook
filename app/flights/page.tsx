@@ -41,15 +41,16 @@ const flightTips = [
 export default function FlightsPage() {
   return (
     <main className="min-h-screen bg-[#f7f8fa] pb-14">
-      <section className="relative h-[280px] overflow-hidden bg-slate-950 sm:h-[380px] md:h-[440px] lg:h-[500px]" aria-label="The World Awaits">
+      <section className="relative h-[280px] overflow-hidden bg-slate-950 sm:h-[380px] md:h-[440px] lg:h-[500px]" aria-label="A Zimbabwe flight taking off">
         <Image
-          src="/flight-world.png"
-          alt="Family at the airport, ready to explore — the world awaits"
+          src="/flight-hero.png"
+          alt="Travelers boarding an airplane at sunset"
           fill
           priority
           sizes="100vw"
           className="object-cover object-center"
         />
+        <div className="absolute inset-0 bg-slate-950/15" aria-hidden="true" />
       </section>
 
       <div className="container-page relative z-10 -mt-10 sm:-mt-14">

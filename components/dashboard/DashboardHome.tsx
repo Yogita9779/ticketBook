@@ -1,15 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, ChevronLeft, ChevronRight, MapPin, Sparkles } from "lucide-react";
+import { ArrowRight, MapPin, Sparkles } from "lucide-react";
 import { Avatar } from "@/components/dashboard/DashboardShell";
 import { DashEventCard } from "@/components/dashboard/DashEventCard";
 import { CountUp, dashCard, StatusBadge, TicketQr } from "@/components/dashboard/ui";
 import { useSavedEvents } from "@/hooks/use-saved-events";
 import { isUpcoming, ticketCount, useAccount } from "@/lib/account-store";
-import { formatLongDate, formatRand, formatTime, orderTotals } from "@/lib/utils";
+import { formatLongDate, formatRand, formatTime, orderTotals, USD_TO_ZWG_RATE, type DisplayCurrency } from "@/lib/utils";
 import type { EventItem } from "@/types";
 
 export function DashboardHome({ events }: { events: EventItem[] }) {
@@ -18,11 +18,43 @@ export function DashboardHome({ events }: { events: EventItem[] }) {
   const saved = useSavedEvents();
   const reduced = useReducedMotion();
   const scroller = useRef<HTMLDivElement>(null);
+  const [carouselPaused, setCarouselPaused] = useState(false);
+  const [currency, setCurrency] = useState<DisplayCurrency>("USD");
   const firstName = profile.name.trim().split(/\s+/)[0] || "there";
   const savedEvents = saved.ready ? events.filter((event) => saved.has(event.id)) : [];
   const upcoming = bookings.filter((booking) => isUpcoming(booking)).slice(0, 3);
   const recommended = events.filter((event) => event.featured || event.trendingRank !== null).slice(0, 10);
   const upcomingCount = bookings.filter((booking) => isUpcoming(booking)).length;
+
+  useEffect(() => {
+    const element = scroller.current;
+    if (!element || reduced || carouselPaused || recommended.length < 2) return;
+
+    let direction = 1;
+    let frame = 0;
+    let previousTime = 0;
+    const speed = 42; // pixels per second
+    const animate = (time: number) => {
+      if (previousTime) {
+        const maxScroll = element.scrollWidth - element.clientWidth;
+        if (maxScroll > 0) {
+          element.scrollLeft += direction * speed * ((time - previousTime) / 1000);
+          if (element.scrollLeft >= maxScroll) {
+            element.scrollLeft = maxScroll;
+            direction = -1;
+          } else if (element.scrollLeft <= 0) {
+            element.scrollLeft = 0;
+            direction = 1;
+          }
+        }
+      }
+      previousTime = time;
+      frame = window.requestAnimationFrame(animate);
+    };
+    frame = window.requestAnimationFrame(animate);
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [carouselPaused, reduced, recommended.length]);
 
   return (
     <div className="space-y-8">
@@ -93,21 +125,43 @@ export function DashboardHome({ events }: { events: EventItem[] }) {
         </section>
       )}
 
-      <section aria-labelledby="recommended-heading">
-        <div className="mb-4 flex items-center justify-between gap-3">
+      <section
+        aria-labelledby="recommended-heading"
+        onMouseEnter={() => setCarouselPaused(true)}
+        onMouseLeave={() => setCarouselPaused(false)}
+        onFocusCapture={() => setCarouselPaused(true)}
+        onBlurCapture={(event) => {
+          if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setCarouselPaused(false);
+        }}
+        onTouchStart={() => setCarouselPaused(true)}
+        onTouchEnd={() => setCarouselPaused(false)}
+      >
+        <div className="mb-4 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 id="recommended-heading" className="flex items-center gap-2 text-xl font-bold"><Sparkles className="h-5 w-5 text-rose-600" aria-hidden="true" />Recommended for you</h2>
             <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Popular nights out, picked from events near your cities.</p>
           </div>
-          <div className="hidden gap-2 sm:flex">
-            <button type="button" aria-label="Scroll recommendations backward" onClick={() => scroller.current?.scrollBy({ left: -320, behavior: reduced ? "auto" : "smooth" })} className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-600 dark:border-white/10 dark:bg-[#161922]"><ChevronLeft className="h-4 w-4" /></button>
-            <button type="button" aria-label="Scroll recommendations forward" onClick={() => scroller.current?.scrollBy({ left: 320, behavior: reduced ? "auto" : "smooth" })} className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-600 dark:border-white/10 dark:bg-[#161922]"><ChevronRight className="h-4 w-4" /></button>
+          <div className="flex shrink-0 items-center gap-2 rounded-full border border-slate-100 bg-white px-3 py-2 text-xs shadow-sm dark:border-white/10 dark:bg-[#161922] sm:gap-3 sm:px-4 sm:text-sm">
+            <span className="font-semibold text-slate-800 dark:text-slate-100">Prices in {currency}</span>
+            <span className="text-slate-300" aria-hidden="true">|</span>
+            <span className="text-slate-500 dark:text-slate-400" title="RBZ average rate, 9 October 2026">
+              1 USD = {currency === "USD" ? "1 USD" : `${USD_TO_ZWG_RATE} ZWG`}
+            </span>
+            <select
+              aria-label="Recommendation price currency"
+              value={currency}
+              onChange={(event) => setCurrency(event.target.value as DisplayCurrency)}
+              className="h-8 rounded-full border border-emerald-500 bg-white px-2 text-xs font-semibold text-slate-800 outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 dark:bg-[#161922] dark:text-white sm:text-sm"
+            >
+              <option value="USD">USD</option>
+              <option value="ZWG">ZWG</option>
+            </select>
           </div>
         </div>
-        <div ref={scroller} className="flex snap-x gap-4 overflow-x-auto pb-2 [scrollbar-width:none]" tabIndex={0} aria-label="Recommended events">
+        <div ref={scroller} className="flex snap-none gap-4 overflow-x-auto pb-2 [scrollbar-width:none]" tabIndex={0} aria-label="Recommended events">
           {recommended.map((event) => (
-            <div key={event.id} className="w-[280px] shrink-0 snap-start sm:w-[320px]">
-              <DashEventCard event={event} />
+            <div key={event.id} className="w-[280px] shrink-0 sm:w-[320px]">
+              <DashEventCard event={event} currency={currency} />
             </div>
           ))}
         </div>

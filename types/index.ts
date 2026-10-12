@@ -1,9 +1,45 @@
+export const ZIMBABWE_URBAN_CENTRES = [
+  "Harare",
+  "Bulawayo",
+  "Chitungwiza",
+  "Mutare",
+  "Epworth",
+  "Gweru",
+  "Kwekwe",
+  "Kadoma",
+  "Masvingo",
+  "Chinhoyi",
+  "Marondera",
+  "Norton",
+  "Ruwa",
+  "Chegutu",
+  "Zvishavane",
+  "Bindura",
+  "Beitbridge",
+  "Redcliff",
+  "Hwange",
+  "Victoria Falls",
+  "Rusape",
+  "Chiredzi",
+  "Kariba",
+  "Chipinge",
+  "Gokwe",
+  "Shurugwi",
+  "Gwanda",
+  "Karoi",
+  "Plumtree",
+  "Mvurwi",
+  "Chirundu",
+  "Lupane",
+] as const;
+
 export const CITIES = [
   "Johannesburg",
   "Cape Town",
   "Durban",
   "Pretoria",
   "Port Elizabeth",
+  ...ZIMBABWE_URBAN_CENTRES,
 ] as const;
 
 export type City = (typeof CITIES)[number];
@@ -169,8 +205,9 @@ export interface CartLine {
   title: string;
   image: string;
   venue: string;
-  city: string;
+  city: City;
   date: string;
+  category: EventCategory;
   tierName: TicketTierName;
   unitPrice: number;
   quantity: number;

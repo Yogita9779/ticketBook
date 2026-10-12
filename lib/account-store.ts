@@ -36,7 +36,7 @@ interface AccountState {
   setBookingReminders: (value: boolean) => void;
   updateProfile: (profile: AccountProfile) => void;
   addBooking: (input: {
-    event: EventItem;
+    event: BookingEvent;
     tierName: TicketTierName;
     unitPrice: number;
     quantity: number;
@@ -69,7 +69,9 @@ function accountDataFrom(state: Pick<AccountState, "bookings" | "activity" | "no
   };
 }
 
-function snapshot(event: EventItem, extra: Partial<Booking> & Pick<Booking, "id" | "status" | "quantity" | "createdAt">): Booking {
+type BookingEvent = Pick<EventItem, "id" | "slug" | "title" | "image" | "venue" | "city" | "date" | "category" | "priceFrom">;
+
+function snapshot(event: BookingEvent, extra: Partial<Booking> & Pick<Booking, "id" | "status" | "quantity" | "createdAt">): Booking {
   return {
     eventId: event.id,
     slug: event.slug,
@@ -153,7 +155,7 @@ export const useAccount = create<AccountState>()(
           if (state.credentialsByEmail[accountKey]) return state;
           registered = true;
           const cleanProfile = { ...profile, email: profile.email.trim() };
-          const blankData = { bookings: [], activity: [], notices: [] };
+          const blankData = state.accountDataByEmail[accountKey] ?? { bookings: [], activity: [], notices: [] };
           return {
             signedIn: false,
             profilesByEmail: { ...state.profilesByEmail, [accountKey]: cleanProfile },
@@ -226,10 +228,15 @@ export const useAccount = create<AccountState>()(
           at: booking.createdAt,
           tone: "emerald",
         };
-        set((state) => ({
-          bookings: [booking, ...state.bookings],
-          activity: [entry, ...state.activity].slice(0, 20),
-          notices: [
+        set((state) => {
+          const accountKey = attendee.email.trim().toLowerCase() || state.profile.email.trim().toLowerCase();
+          const activeAccountKey = state.profile.email.trim().toLowerCase();
+          const currentData = accountKey === activeAccountKey
+            ? accountDataFrom(state)
+            : state.accountDataByEmail[accountKey] ?? { bookings: [], activity: [], notices: [] };
+          const bookings = [booking, ...currentData.bookings];
+          const activity = [entry, ...currentData.activity].slice(0, 20);
+          const notices = [
             {
               id: uid("nt"),
               title: "Tickets are ready",
@@ -238,9 +245,15 @@ export const useAccount = create<AccountState>()(
               at: booking.createdAt,
               read: false,
             },
-            ...state.notices,
-          ].slice(0, 20),
-        }));
+            ...currentData.notices,
+          ].slice(0, 20);
+          return {
+            ...(accountKey === activeAccountKey ? { bookings, activity, notices } : {}),
+            accountDataByEmail: accountKey
+              ? { ...state.accountDataByEmail, [accountKey]: { bookings, activity, notices } }
+              : state.accountDataByEmail,
+          };
+        });
         return booking;
       },
       cancelBooking: (id) =>

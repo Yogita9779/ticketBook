@@ -8,8 +8,10 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { stayDeals } from "@/data/deals";
 import { toSearchString } from "@/lib/utils";
+import { zimbabweSuburbDestinations } from "@/data/categories";
+import { ZIMBABWE_URBAN_CENTRES } from "@/types";
 
-const destinations = [...new Set(stayDeals.map((stay) => stay.city))];
+const destinations = [...new Set([...stayDeals.map((stay) => stay.city), ...ZIMBABWE_URBAN_CENTRES, ...zimbabweSuburbDestinations])];
 
 export function StaySearchWidget() {
   const router = useRouter();

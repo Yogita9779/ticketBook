@@ -25,13 +25,14 @@ export default async function EventsPage() {
     <main className="min-h-screen bg-[#f7f8fa] pb-14">
       <section className="relative aspect-[3/1] overflow-hidden bg-slate-950 sm:aspect-auto sm:h-[380px] md:h-[440px] lg:h-[500px]" aria-label="Live the Moment">
         <Image
-          src="/live-the-moment.png"
-          alt="Live the Moment — discover amazing live experiences happening near you"
+          src="/events-hero.png"
+          alt="Friends enjoying a live outdoor music festival"
           fill
           priority
           sizes="100vw"
           className="object-cover object-center"
         />
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/45 via-slate-950/15 to-slate-950/25" aria-hidden="true" />
       </section>
 
       <div className="container-page relative z-10 sm:-mt-14">

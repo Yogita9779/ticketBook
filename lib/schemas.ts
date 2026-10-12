@@ -22,12 +22,10 @@ export const checkoutSchema = z.object({
   email: z.string().min(1, "Email is required").email("Enter a valid email address"),
   phone: z
     .string()
-    .min(10, "Enter a valid phone number")
-    .regex(/^[0-9+\s()-]{10,18}$/, "Enter a valid phone number"),
+    .regex(/^\d{10}$/, "Enter exactly 10 digits after +263"),
   cardNumber: z
     .string()
-    .min(1, "Card number is required")
-    .refine((value) => /^\d{16}$/.test(value.replace(/\s+/g, "")), "Enter a valid card number"),
+    .regex(/^\d{16}$/, "Enter a valid card number"),
   expiry: z
     .string()
     .regex(/^(0[1-9]|1[0-2])\/\d{2}$/, "Use MM/YY")

@@ -28,6 +28,7 @@ export function EventDetail({ event, related }: { event: EventItem; related: Eve
       venue: event.venue,
       city: event.city,
       date: event.date,
+      category: event.category,
       tierName: tier.name,
       unitPrice: tier.price,
       quantity,
@@ -121,7 +122,7 @@ export function EventDetail({ event, related }: { event: EventItem; related: Eve
             <span className="text-sm text-ink-muted">Total</span>
             <span className="text-xl font-bold">{formatRand(total)}</span>
           </div>
-          <Button type="button" className="mt-4 hidden w-full lg:inline-flex" onClick={add}>
+          <Button type="button" className="mt-4 w-full" onClick={add}>
             Add to cart
           </Button>
         </div>
@@ -138,17 +139,6 @@ export function EventDetail({ event, related }: { event: EventItem; related: Eve
           </div>
         </section>
       ) : null}
-      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-neutral-200 bg-white p-4 shadow-elevated lg:hidden">
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <p className="text-xs text-ink-muted">{tier.name}</p>
-            <p className="text-lg font-bold">{formatRand(total)}</p>
-          </div>
-          <Button type="button" onClick={add}>
-            Add to cart
-          </Button>
-        </div>
-      </div>
     </article>
   );
 }

@@ -5,6 +5,7 @@ import { MapPin, Star } from "lucide-react";
 import { StaySearchWidget } from "@/components/home/StaySearchWidget";
 import { getStayDeals } from "@/lib/api";
 import { formatRand, toSearchString } from "@/lib/utils";
+import { photoUrl } from "@/lib/photo-library";
 
 export const dynamic = "force-dynamic";
 
@@ -21,7 +22,7 @@ export default async function AccommodationPage() {
   return (
     <main className="min-h-screen bg-[#f7f8fa] pb-16">
       <section className="relative h-[280px] overflow-hidden bg-slate-900 sm:h-[380px] md:h-[440px] lg:h-[500px]" aria-label="More Than Just a Stay">
-        <Image src="/stay-hero.png" alt="Family arriving at a hotel for a memorable stay" fill priority sizes="100vw" className="object-cover object-[center_10%]" />
+        <Image src="/stay-hero.png" alt="African travelers arriving with their luggage at a bright, welcoming hotel room" fill priority sizes="100vw" className="object-cover object-[center_35%] max-sm:object-[left_35%]" />
       </section>
 
       <div className="container-page relative z-10 -mt-16">

@@ -5,10 +5,10 @@ import Link from "next/link";
 import { Heart, MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { useSavedEvents } from "@/hooks/use-saved-events";
-import { formatLongDate, formatRand, formatTime } from "@/lib/utils";
+import { formatDisplayCurrency, formatLongDate, formatTime, type DisplayCurrency } from "@/lib/utils";
 import type { EventItem } from "@/types";
 
-export function DashEventCard({ event }: { event: EventItem }) {
+export function DashEventCard({ event, currency = "USD" }: { event: EventItem; currency?: DisplayCurrency }) {
   const saved = useSavedEvents();
   const active = saved.ready && saved.has(event.id);
 
@@ -41,7 +41,7 @@ export function DashEventCard({ event }: { event: EventItem }) {
           <span>{event.venue}, {event.city}</span>
         </p>
         <div className="mt-auto flex items-center justify-between gap-3 pt-4">
-          <p className="text-sm font-bold text-slate-900 dark:text-white">From {formatRand(event.priceFrom)}</p>
+          <p className="text-sm font-bold text-slate-900 dark:text-white">From {formatDisplayCurrency(event.priceFrom, currency)}</p>
           <Link
             href={`/dashboard/events/${event.slug}?book=1`}
             className="inline-flex h-10 items-center rounded-xl bg-rose-600 px-3 text-sm font-semibold text-white hover:bg-rose-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-600 focus-visible:ring-offset-2"

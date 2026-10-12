@@ -1,19 +1,20 @@
 import type { CategoryTile, HeroSlide, MegaColumn } from "@/types";
+import { ZIMBABWE_URBAN_CENTRES } from "@/types";
 import { categoryPhoto } from "@/lib/photo-library";
 
 export const heroSlides: HeroSlide[] = [
   {
     id: "hero-concerts",
     title: "Live music under the highveld sky",
-    subtitle: "Concerts, festivals and late-night sessions across South Africa.",
+    subtitle: "Concerts, festivals and late-night sessions across Zimbabwe.",
     cta: "Browse concerts",
     href: "/search?type=events&category=Concerts",
-    image: "https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=2000&q=85",
-    imageAlt: "Crowd at an outdoor evening concert",
+    image: "https://images.unsplash.com/photo-1575826498738-a9f8b4bc0fb6?auto=format&fit=crop&w=2000&q=85",
+    imageAlt: "Dancers at dawn in Hwange, Zimbabwe",
   },
   {
     id: "hero-flights",
-    title: "Weekend escapes from R899",
+    title: "Weekend escapes from $899",
     subtitle: "Compare flight deals between Johannesburg, Cape Town, Durban and beyond.",
     cta: "Search flights",
     href: "/flights",
@@ -124,6 +125,9 @@ export const airports = [
   { city: "East London", code: "ELS" },
   { city: "George", code: "GRJ" },
   { city: "Bloemfontein", code: "BFN" },
+  { city: "Harare", code: "HRE" },
+  { city: "Bulawayo", code: "BUQ" },
+  { city: "Victoria Falls", code: "VFA" },
 ];
 
 export const busCities = [
@@ -137,6 +141,47 @@ export const busCities = [
   "Polokwane",
   "Nelspruit",
   "Kimberley",
+  ...ZIMBABWE_URBAN_CENTRES,
 ];
+
+// Major named suburbs and residential areas, grouped by their Zimbabwean city/town.
+export const zimbabweSuburbsByCity: Record<(typeof ZIMBABWE_URBAN_CENTRES)[number], string[]> = {
+  Harare: ["Avenues", "Avondale", "Borrowdale", "Borrowdale Brooke", "Chisipite", "Eastlea", "Greendale", "Greystone Park", "Highlands", "Hatfield", "Mabvuku", "Marlborough", "Mbare", "Milton Park", "Mount Pleasant", "Newlands", "Southerton", "Waterfalls", "Westgate", "Warren Park", "Budiriro", "Glen View", "Highfield", "Kuwadzana", "Mufakose", "Dzivarasekwa", "Tynwald", "Belvedere", "Msasa", "Zimre Park", "Vainona", "Glen Lorne", "Helensvale", "Pomona", "Mount Pleasant Heights", "Hatcliffe", "Mabvuku", "Chadcombe", "Arlington", "Southlea Park", "Hillside", "Mabelreign", "Emerald Hill", "Bluff Hill", "Westlea", "Aspindale Park", "Sentosa", "Glen Norah", "Graniteside", "Workington", "Willowvale", "Avondale West", "Mount Hampden", "Borrowdale West", "Gunhill", "Alexandra Park", "The Avenues", "Kambuzuma", "Rugare", "Queensdale", "Parktown", "Glen View"],
+  Bulawayo: ["City Centre", "Suburbs", "North End", "Bradfield", "Famona", "Hillcrest", "Morningside", "Kumalo", "Hillside", "Burnside", "Matsheumhlope", "Riverside", "Sunnyside", "Barbourfields", "Nkulumane", "Entumbane", "Makokoba", "Pumula", "Mzilikazi", "Nguboyenja", "Barham Green", "Ascot", "Burnside", "Ilanda", "Manningdale", "Selborne Park", "Fortunes Gate", "Hillside South", "Northvale", "Waterford", "Woodville", "Cowdray Park", "Nketa", "Sizinda", "Tshabalala", "Thorngrove", "Belmont", "Donnington", "Kelvin", "Steeldale", "Sauerstown", "Queens Park East", "Queens Park West", "Mpopoma", "Luveve", "Emganwini", "Pelandaba", "Montrose", "Greenhill", "Parklands", "Killarney"],
+  Chitungwiza: ["St Mary's", "Zengeza", "Seke", "Unit A", "Unit B", "Unit C", "Unit D", "Unit E", "Unit F", "Unit G", "Unit H", "Manyame Park", "Chikwanha", "Makoni Shopping Centre"],
+  Mutare: ["Avenues", "Sakubva", "Dangamvura", "Chikanga", "Hobhouse", "Greenside", "Morningside", "Yeovil", "Fairbridge Park", "Murambi", "Palmerston", "Bordervale", "Fern Valley", "Natview Park", "Westlea", "Florida", "Darlington", "Hobhouse Extension"],
+  Epworth: ["Overspill", "Magada", "Domboramwari", "Zinyengere", "Jacha", "Munyuki"],
+  Gweru: ["Mkoba", "Mambo", "Ascot", "Senga", "Riverside", "Kopje", "Windsor Park", "Nehosho", "Southdowns", "Athlone", "Lundi Park", "Hillside"],
+  Kwekwe: ["Mbizo", "Amaveni", "Msasa Park", "Goldrich", "Hillandale", "Newtown", "Gaika", "Beverly Hills", "Chicago", "Golden Acres", "Southwood", "Fitchlea"],
+  Kadoma: ["Rimuka", "Ngezi", "Waverly", "Eiffel Flats", "New Kadoma", "Rimuka Extension"],
+  Masvingo: ["Mucheke", "Rujeko", "Rhodene", "Target Kopje", "Eastvale", "Runyararo", "Hillside", "Zimre Park", "Clipsham Park", "Clipsham View"],
+  Chinhoyi: ["Chikonohono", "Ruvimbo", "Coldstream", "Orange Grove", "Alaska", "Brundish"],
+  Marondera: ["Dombotombo", "Nyameni", "Cherutombo", "Rudhaka", "Paradise", "Greenwood Park"],
+  Norton: ["Knowe", "Knowe Phase 2", "Knowe Phase 3", "Katanga", "Maridale", "Ngoni", "Galloway", "Calfa", "Twin Lakes", "Nharira", "Mwashuma Park", "Johannesburg"],
+  Ruwa: ["Zimre Park", "Damofalls", "Mabvazuva", "Springvale", "Murisa Park", "Ruwa Town Centre"],
+  Chegutu: ["Chinengundu", "Pfupajena", "Kaguvi", "Umvovo", "Hintonville", "Gadzema"],
+  Zvishavane: ["Mandava", "Maglas", "Highlands", "Riverside", "Mabasa"],
+  Bindura: ["Chiwaridzo", "Chipadze", "Aerodrome", "Tsungubvi", "Kimberley Reefs"],
+  Beitbridge: ["Matibe", "Tshidixwa", "Sitauze", "Khwalu 1", "Khwalu 2", "Mabidi", "Vhembe View", "Dulivhadzimu", "Tshitaudze"],
+  Redcliff: ["Redcliff", "Torwood", "Rutendo"],
+  Hwange: ["Empumalanga", "Baobab", "Chibondo", "Madumabisa"],
+  "Victoria Falls": ["Chinotimba", "Mkhosana", "Aerodrome", "Victoria Falls Town Centre"],
+  Rusape: ["Vengere", "Mabvazuva", "Tsanzaguru", "Rusape Town Centre"],
+  Chiredzi: ["Tshovani", "Hippo Valley", "Chiredzi Town Centre"],
+  Kariba: ["Mahombekombe", "Nyamhunga", "Kariba Heights", "Baobab Ridge", "Charara"],
+  Chipinge: ["Gaza", "Chipinge Town Centre", "Chipinge Central"],
+  Gokwe: ["Gokwe Centre", "Gokwe Town Centre"],
+  Shurugwi: ["Impali", "Daylesford", "Shurugwi Town Centre"],
+  Gwanda: ["Jahunda", "Phakama", "Spitzkop", "Garikai", "Gwanda Town Centre"],
+  Karoi: ["Chikangwe", "Karoi Town Centre"],
+  Plumtree: ["Plumtree Town Centre"],
+  Mvurwi: ["Mvurwi Town Centre"],
+  Chirundu: ["Chirundu Town Centre"],
+  Lupane: ["Lupane Centre", "Lupane Growth Point"],
+};
+
+export const zimbabweSuburbDestinations = Object.entries(zimbabweSuburbsByCity).flatMap(([city, suburbs]) =>
+  suburbs.map((suburb) => `${suburb}, ${city}`),
+);
 
 export const voucherAmounts = [100, 250, 500, 1000, 2000];

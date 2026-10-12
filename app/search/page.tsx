@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/Skeletons";
 import { searchBuses, searchEvents, searchFlights, searchStays, searchVouchers } from "@/lib/api";
 import { formatRand, parseSearchQuery, toSearchString } from "@/lib/utils";
+import { photoUrl } from "@/lib/photo-library";
 import type { SearchQuery } from "@/types";
 
 export const dynamic = "force-dynamic";
@@ -33,7 +34,7 @@ export default async function SearchPage({
         title={heading}
         description="Filter by city, date and price, then sort the list."
         current="Search"
-        backgroundImage={query.type === "events" ? "/live-the-moment.png" : undefined}
+        backgroundImage={query.type === "events" ? photoUrl("1575826498738-a9f8b4bc0fb6", 2000, 800) : undefined}
       />
       <div className="container-page grid gap-8 py-8 lg:grid-cols-[16rem_1fr]">
         <aside className="hidden lg:block" aria-label="Filters">
@@ -109,7 +110,7 @@ function ResultGrid({
         {data.items.map((deal) => (
           <DealCard
             key={deal.id}
-            href={toSearchString({ type: "flights", origin: deal.from, to: deal.to })}
+            href={travelBookingHref("flights", deal.id, query)}
             image={deal.image}
             imageAlt={`${deal.airline} from ${deal.from} to ${deal.to}`}
             title={`${deal.from} to ${deal.to}`}
@@ -128,7 +129,7 @@ function ResultGrid({
         {data.items.map((deal) => (
           <DealCard
             key={deal.id}
-            href={toSearchString({ type: "bus", origin: deal.from, to: deal.to })}
+            href={travelBookingHref("bus", deal.id, query)}
             image={deal.image}
             imageAlt={`${deal.operator} from ${deal.from} to ${deal.to}`}
             title={`${deal.from} to ${deal.to}`}
@@ -180,6 +181,15 @@ function ResultGrid({
       ))}
     </div>
   );
+}
+
+function travelBookingHref(type: "flights" | "bus", id: string, query: SearchQuery) {
+  const params = new URLSearchParams({ type, id });
+  for (const key of ["depart", "trip", "passengers", "cabin", "stops"] as const) {
+    if (query[key]) params.set(key, query[key]);
+  }
+  if (query.ret) params.set("return", query.ret);
+  return `/booking?${params.toString()}`;
 }
 
 function Pagination({ query, page, pages }: { query: SearchQuery; page: number; pages: number }) {

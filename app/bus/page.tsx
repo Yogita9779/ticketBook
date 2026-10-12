@@ -6,7 +6,6 @@ import { DealCard } from "@/components/ui/DealCard";
 import { DealGridSkeleton } from "@/components/ui/Skeletons";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { getBusDeals } from "@/lib/api";
-import { toSearchString } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -19,15 +18,16 @@ export const metadata: Metadata = {
 export default function BusPage() {
   return (
     <main className="min-h-screen bg-[#f7f8fa] pb-14">
-      <section className="relative h-[280px] overflow-hidden bg-slate-950 sm:h-[380px] md:h-[440px] lg:h-[500px]" aria-label="Journeys Begin With Love">
+      <section className="relative h-[280px] overflow-hidden bg-slate-950 sm:h-[380px] md:h-[440px] lg:h-[500px]" aria-label="Zimbabwe bus journeys">
         <Image
-          src="/bus-journey.png"
-          alt="A family sharing a warm goodbye at a bus station — journeys begin with love"
+          src="/bus-hero.png"
+          alt="African travelers boarding a coach at a bright bus terminal"
           fill
           priority
           sizes="100vw"
-          className="object-cover object-[center_38%]"
+          className="object-cover object-[center_42%] max-sm:object-[center_38%]"
         />
+        <div className="absolute inset-0 bg-slate-950/10" aria-hidden="true" />
       </section>
 
       <div className="container-page relative z-10 -mt-10 sm:-mt-14">
@@ -58,14 +58,13 @@ async function BusGrid() {
       {deals.map((deal) => (
         <DealCard
           key={deal.id}
-          href={toSearchString({ type: "bus", origin: deal.from, to: deal.to })}
+          href={`/booking?type=bus&id=${encodeURIComponent(deal.id)}`}
           image={deal.image}
           imageAlt={`${deal.operator} coach from ${deal.from} to ${deal.to}`}
           title={deal.operator}
           subtitle={`${deal.from} → ${deal.to}`}
           meta={`${deal.duration} · Departs ${deal.departs}`}
           price={deal.price}
-          clickable={false}
         />
       ))}
     </div>

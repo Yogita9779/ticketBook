@@ -166,7 +166,7 @@ function TravelDealSideList({ items, vertical }: { items: TravelDealItem[]; vert
         {items.map((deal) => <TravelDealSideCard key={`${deal.id}-mobile`} deal={deal} />)}
       </div>
       <div className="hidden h-[28.5rem] overflow-hidden lg:block">
-        <div className="flex flex-col gap-3 [animation:travel-deals-vertical_34s_linear_infinite] hover:[animation-play-state:paused] motion-reduce:[animation:none]">
+        <div className="flex flex-col gap-3 [animation:travel-deals-vertical_22s_linear_infinite] hover:[animation-play-state:paused] motion-reduce:[animation:none]">
           {[...items, ...items].map((deal, index) => (
             <TravelDealSideCard key={`${deal.id}-${index}`} deal={deal} fixedHeight />
           ))}

@@ -181,10 +181,11 @@ export async function searchBuses(query: SearchQuery) {
 export async function searchStays(query: SearchQuery) {
   await wait();
   const place = query.destination || query.city || query.q;
+  const [suburb, city] = place.split(",").map((part) => part.trim());
   let list = stayDeals.filter((deal) => {
-    const placeOk =
-      !place ||
-      `${deal.city} ${deal.area} ${deal.name}`.toLowerCase().includes(place.toLowerCase());
+    const searchablePlace = `${deal.city} ${deal.area} ${deal.name}`.toLowerCase();
+    const placeOk = !place || searchablePlace.includes(place.toLowerCase()) ||
+      (Boolean(city) && searchablePlace.includes(city.toLowerCase()) && searchablePlace.includes(suburb.toLowerCase()));
     const priceOk = deal.pricePerNight >= query.minPrice && deal.pricePerNight <= query.maxPrice;
     return placeOk && priceOk;
   });

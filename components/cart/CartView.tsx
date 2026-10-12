@@ -13,17 +13,21 @@ import { FieldError } from "@/components/ui/FieldError";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useCart } from "@/lib/cart-store";
+import { useAccount } from "@/lib/account-store";
 import { checkoutSchema, type CheckoutValues } from "@/lib/schemas";
 import { formatLongDate, formatRand, orderTotals } from "@/lib/utils";
+import type { EventItem } from "@/types";
 
 export function CartView() {
   const items = useCart((state) => state.items);
   const updateQuantity = useCart((state) => state.updateQuantity);
   const removeItem = useCart((state) => state.removeItem);
   const clear = useCart((state) => state.clear);
+  const addBooking = useAccount((state) => state.addBooking);
   const [ready, setReady] = useState(false);
   const [open, setOpen] = useState(false);
   const [orderRef, setOrderRef] = useState("");
+  const [bookingEmail, setBookingEmail] = useState("");
   const [paidTotal, setPaidTotal] = useState(0);
 
   useEffect(() => {
@@ -131,10 +135,34 @@ export function CartView() {
         open={open}
         total={orderRef ? paidTotal : totals.total}
         orderRef={orderRef}
+        bookingEmail={bookingEmail}
         onOpenChange={setOpen}
-        onSuccess={(reference) => {
+        onSuccess={(reference, attendee) => {
+          let firstBookingId = "";
+          items.forEach((item) => {
+            const event: Pick<EventItem, "id" | "slug" | "title" | "image" | "venue" | "city" | "date" | "category" | "priceFrom"> = {
+              id: item.eventId,
+              slug: item.slug,
+              title: item.title,
+              image: item.image,
+              venue: item.venue,
+              city: item.city,
+              date: item.date,
+              category: item.category ?? "Concerts",
+              priceFrom: item.unitPrice,
+            };
+            const booking = addBooking({
+              event,
+              tierName: item.tierName,
+              unitPrice: item.unitPrice,
+              quantity: item.quantity,
+              attendee: { ...attendee, phone: `+263${attendee.phone}` },
+            });
+            if (!firstBookingId) firstBookingId = booking.id;
+          });
           setPaidTotal(totals.total);
-          setOrderRef(reference);
+          setBookingEmail(attendee.email);
+          setOrderRef(firstBookingId || reference);
           clear();
         }}
       />
@@ -147,15 +175,19 @@ function CheckoutDialog({
   onOpenChange,
   total,
   orderRef,
+  bookingEmail,
   onSuccess,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   total: number;
   orderRef: string;
-  onSuccess: (reference: string) => void;
+  bookingEmail: string;
+  onSuccess: (reference: string, attendee: Pick<CheckoutValues, "name" | "email" | "phone">) => void;
 }) {
   const [pending, setPending] = useState(false);
+  const signedInEmail = useAccount((state) => state.profile.email.trim().toLowerCase());
+  const bookingEmailMatchesAccount = bookingEmail.trim().toLowerCase() === signedInEmail;
   const form = useForm<CheckoutValues>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: { name: "", email: "", phone: "", cardNumber: "", expiry: "", cvc: "" },
@@ -170,11 +202,13 @@ function CheckoutDialog({
             <DialogHeader className="mt-4 items-center">
               <DialogTitle>Booking confirmed</DialogTitle>
               <DialogDescription>
-                Reference {orderRef}. A mock confirmation was prepared for {formatRand(total)}.
+                Reference {orderRef}. Booking saved for {bookingEmail}. A mock confirmation was prepared for {formatRand(total)}.
               </DialogDescription>
             </DialogHeader>
             <Button asChild className="mt-6">
-              <Link href="/">Back to home</Link>
+              <Link href={bookingEmailMatchesAccount ? "/dashboard/bookings" : "/login"}>
+                {bookingEmailMatchesAccount ? "View my bookings" : "Sign in to view booking"}
+              </Link>
             </Button>
           </div>
         ) : (
@@ -186,13 +220,13 @@ function CheckoutDialog({
             <form
               className="grid gap-3"
               noValidate
-              onSubmit={form.handleSubmit(async () => {
+              onSubmit={form.handleSubmit(async (values) => {
                 setPending(true);
                 await new Promise((resolve) => setTimeout(resolve, 600));
                 const reference = `TH-${Date.now().toString().slice(-8)}`;
                 setPending(false);
                 form.reset();
-                onSuccess(reference);
+                onSuccess(reference, { name: values.name, email: values.email, phone: values.phone });
               })}
             >
               <div>
@@ -207,23 +241,35 @@ function CheckoutDialog({
               </div>
               <div>
                 <Label htmlFor="co-phone">Phone</Label>
-                <Input id="co-phone" type="tel" autoComplete="tel" placeholder="082 000 0000" className="mt-1" {...form.register("phone")} />
+                <div className="relative mt-1">
+                  <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-sm font-medium text-slate-600">+263</span>
+                  <Input id="co-phone" type="tel" inputMode="numeric" autoComplete="tel-national" maxLength={10} placeholder="771234567" className="pl-14" {...form.register("phone")} onChange={(event) => form.setValue("phone", event.target.value.replace(/\D/g, "").slice(0, 10), { shouldDirty: true, shouldValidate: true })} />
+                </div>
                 <FieldError message={form.formState.errors.phone?.message} />
               </div>
               <div>
                 <Label htmlFor="co-card">Card number</Label>
-                <Input id="co-card" inputMode="numeric" autoComplete="cc-number" placeholder="4242424242424242" className="mt-1" {...form.register("cardNumber")} />
+                <Input id="co-card" inputMode="numeric" autoComplete="cc-number" maxLength={16} placeholder="4242424242424242" className="mt-1" {...form.register("cardNumber")} value={form.watch("cardNumber")} onChange={(event) => form.setValue("cardNumber", event.target.value.replace(/\D/g, "").slice(0, 16), { shouldDirty: true, shouldValidate: true })} />
                 <FieldError message={form.formState.errors.cardNumber?.message} />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <Label htmlFor="co-exp">Expiry</Label>
-                  <Input id="co-exp" autoComplete="cc-exp" placeholder="MM/YY" className="mt-1" {...form.register("expiry")} />
+                  <Input id="co-exp" inputMode="numeric" autoComplete="cc-exp" maxLength={5} placeholder="MM/YY" className="mt-1" {...form.register("expiry")} value={form.watch("expiry")} onChange={(event) => {
+                    let digits = event.target.value.replace(/\D/g, "").slice(0, 4);
+                    if (digits.length === 1 && digits > "1") digits = "";
+                    if (digits.length >= 2) {
+                      const month = Number(digits.slice(0, 2));
+                      if (month < 1 || month > 12) digits = digits.slice(0, 1);
+                    }
+                    const expiry = digits.length > 2 ? `${digits.slice(0, 2)}/${digits.slice(2)}` : digits;
+                    form.setValue("expiry", expiry, { shouldDirty: true, shouldValidate: true });
+                  }} />
                   <FieldError message={form.formState.errors.expiry?.message} />
                 </div>
                 <div>
                   <Label htmlFor="co-cvc">CVC</Label>
-                  <Input id="co-cvc" inputMode="numeric" autoComplete="cc-csc" placeholder="123" className="mt-1" {...form.register("cvc")} />
+                  <Input id="co-cvc" inputMode="numeric" autoComplete="cc-csc" maxLength={3} placeholder="123" className="mt-1" {...form.register("cvc")} value={form.watch("cvc")} onChange={(event) => form.setValue("cvc", event.target.value.replace(/\D/g, "").slice(0, 3), { shouldDirty: true, shouldValidate: true })} />
                   <FieldError message={form.formState.errors.cvc?.message} />
                 </div>
               </div>

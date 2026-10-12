@@ -39,12 +39,26 @@ export function formatTime(iso: string) {
   return `${hour}:${minute} ${suffix}`;
 }
 
-export function formatRand(value: number) {
+export function formatCurrency(value: number) {
   // Avoid locale-dependent grouping characters (including NBSP) so server and
   // browser render identical text during hydration.
   const amount = String(Math.round(value)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  return `R${amount}`;
+  return `$${amount}`;
 }
+
+export type DisplayCurrency = "USD" | "ZWG";
+
+// Latest published RBZ USD/ZWG average rate (9 October 2026).
+export const USD_TO_ZWG_RATE = 26.6875;
+
+export function formatDisplayCurrency(value: number, currency: DisplayCurrency) {
+  const amount = currency === "ZWG" ? value * USD_TO_ZWG_RATE : value;
+  const formatted = String(Math.round(amount)).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return currency === "USD" ? `$${formatted}` : `ZWG ${formatted}`;
+}
+
+// Keep the previous export name for existing components while displaying Zimbabwe's currency symbol.
+export const formatRand = formatCurrency;
 
 export const SERVICE_FEE_RATE = 0.08;
 

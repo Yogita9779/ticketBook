@@ -65,10 +65,10 @@ export const metadata: Metadata = {
     description: site.description,
     images: [
       {
-        url: "https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=1200&h=630&q=85",
+        url: "https://images.unsplash.com/photo-1612295673708-6faf3b14f0eb?auto=format&fit=crop&w=1200&h=630&q=85",
         width: 1200,
         height: 630,
-        alt: "Bookora events and travel",
+        alt: "Zimbabwean live music and events on Bookora",
       },
     ],
   },
@@ -76,7 +76,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Buy Tickets Online – Events, Travel, Flights & More",
     description: site.description,
-    images: ["https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=1200&h=630&q=85"],
+    images: ["https://images.unsplash.com/photo-1612295673708-6faf3b14f0eb?auto=format&fit=crop&w=1200&h=630&q=85"],
   },
   robots: { index: true, follow: true },
 };
