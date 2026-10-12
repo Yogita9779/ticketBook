@@ -15,8 +15,8 @@ import { toSearchString } from "@/lib/utils";
 
 const schema = z
   .object({
-    from: z.string().refine((value) => busCities.includes(value), "No data found"),
-    to: z.string().refine((value) => busCities.includes(value), "No data found"),
+    from: z.string().refine((value) => busCities.some((city) => city === value), "No data found"),
+    to: z.string().refine((value) => busCities.some((city) => city === value), "No data found"),
     depart: z.string().min(1, "Choose a travel date"),
     ret: z.string().optional(),
     passengers: z.string().min(1),
@@ -112,6 +112,7 @@ export function BusSearchWidget() {
               }}
               placeholder="Enter city or bus stop"
               autoComplete="off"
+              role="combobox"
               aria-label="Departing from city or bus stop"
               aria-expanded={fromSuggestionsOpen}
               aria-controls="bus-from-suggestions"
@@ -147,6 +148,7 @@ export function BusSearchWidget() {
               }}
               placeholder="Enter city or bus stop"
               autoComplete="off"
+              role="combobox"
               aria-label="Traveling to city or bus stop"
               aria-expanded={toSuggestionsOpen}
               aria-controls="bus-to-suggestions"

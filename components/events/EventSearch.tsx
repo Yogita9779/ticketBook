@@ -34,14 +34,16 @@ export function EventSearch({ events }: { events: SearchEvent[] }) {
           onFocus={() => setOpen(true)}
           placeholder="Search events, artists, venues..."
           aria-label="Search events, artists, venues"
+          role="combobox"
           aria-autocomplete="list"
           aria-expanded={open && suggestions.length > 0}
+          aria-controls="event-search-suggestions"
           className="h-10 min-w-0 flex-1 bg-transparent px-1 text-sm outline-none placeholder:text-slate-400"
         />
         <button type="submit" className="rounded-lg bg-rose-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-rose-700">Search</button>
       </div>
       {open && suggestions.length > 0 ? (
-        <ul role="listbox" aria-label="Matching events" className="absolute left-0 right-0 top-full z-30 mt-2 max-h-72 overflow-auto rounded-xl border border-slate-200 bg-white p-1 shadow-xl">
+        <ul id="event-search-suggestions" role="listbox" aria-label="Matching events" className="absolute left-0 right-0 top-full z-30 mt-2 max-h-72 overflow-auto rounded-xl border border-slate-200 bg-white p-1 shadow-xl">
           {suggestions.map((event) => (
             <li key={event.slug} role="option" aria-selected="false">
               <Link
